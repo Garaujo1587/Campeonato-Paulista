@@ -27,3 +27,26 @@ PRIMARY KEY(codigoTimeA, codigoTimeB)
 FOREIGN KEY(codigoTimeA) REFERENCES times (codigoTime),
 FOREIGN KEY(codigoTimeB) REFERENCES times (codigoTime)
 ) 
+
+INSERT INTO times VALUES 
+(1, 'Botafogo-SP', 'Ribeirão Preto', 'Santa Cruz'),
+(2, 'Bragantino', 'Bragantino Paulista', 'Nabi Abi Chedid'),
+(3, 'Corinthians', 'São Paulo',	'Arena Corinthians'),
+(4, 'Ferroviária', 'Araraquara', 'Fonte Luminosa'),
+(5, 'Guarani', 'Campinas', 'Brinco de Ouro da Princesa'),
+(6, 'Ituano', 'Itu', 'Novelli Júnior'),
+(7, 'Mirassol',	'Mirassol', 'José Maria de Campos Maia'),
+(8, 'Novorizontino', 'Novo Horizonte', 'Jorge Ismael de Biasi'),
+(9, 'Oeste', 'Barueri',	'Arena Barueri'),
+(10, 'Palmeiras', 'São Paulo', 'Allianz Parque'),
+(11, 'Ponte Preta', 'Campinas',	'Moisés Lucarelli'),
+(12, 'Red Bull Brasil',	'Campinas',	'Moisés Lucarelli'),
+(13, 'Santos', 'Santos', 'Vila Belmiro'),
+(14, 'São Bento', 'Sorocaba', 'Walter Ribeiro'),
+(15, 'São Caetano',	'São Caetano do Sul', 'Anacletto Campanella'),
+(16, 'São Paulo', 'São Paulo', 'Morumbi')
+
+CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT) 
+AS
+
+SELECT TOP 4 t.codigoTime FROM times t ORDER BY NEWID()
