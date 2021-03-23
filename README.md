@@ -1,7 +1,7 @@
-# Campeonato-Paulista
-Avaliação de Lab.BD
+<h1 align="center">Campeonato-Paulista :soccer:</h1>
+<h2 align="center"> Avaliação de Lab.BD </h2>
 
 Integrantes:
 
-* Adriano Galan               RA: 1110481912055
-* Gustavo Narciso             RA: 1110481912045
+:arrow_forward: Adriano Galan               RA: 1110481912055
+:arrow_forward: Gustavo Narciso             RA: 1110481912045
