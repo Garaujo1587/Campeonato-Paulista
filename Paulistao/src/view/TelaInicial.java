@@ -39,7 +39,7 @@ public class TelaInicial extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		contentPane.setLayout(null); 
 		
 		JLabel lblPaulistao = new JLabel("Campeonato Paulista");
 		lblPaulistao.setForeground(Color.BLUE);
