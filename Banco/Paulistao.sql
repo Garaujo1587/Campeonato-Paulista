@@ -13,7 +13,7 @@ PRIMARY KEY (codigoTime)
 CREATE TABLE grupos (
 grupo CHAR(1) NOT NULL,  
 codigoTime INT NOT NULL
-PRIMARY KEY (grupo, codigoTime)
+PRIMARY KEY (codigoTime)
 FOREIGN KEY (codigoTime) REFERENCES times (codigoTime)
 )
 
@@ -50,3 +50,36 @@ CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT)
 AS
 
 SELECT TOP 4 t.codigoTime FROM times t ORDER BY NEWID()
+/*
+Select cast(RAND(checksum(newid()))*17 as int )
+
+SELECT ABS(CHECKSUM(NewId())) % 17
+
+SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
+
+*/
+
+CREATE TABLE teste (
+grupo CHAR(1) NOT NULL,  
+codigoTime INT NOT NULL
+PRIMARY KEY (codigoTime)
+FOREIGN KEY (codigoTime) REFERENCES times (codigoTime)
+)
+select * from times
+	
+DECLARE @var INT
+SET @var = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+
+INSERT INTO teste VALUES
+('A', @var)
+
+SELECT * FROM teste
+ORDER BY grupo
+
+IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'A') = 4)
+BEGIN
+	PRINT 'Grupo A formado'
+END
+SELECT COUNT (grupo) FROM teste WHERE grupo = 'B'
+SELECT COUNT (grupo) FROM teste WHERE grupo = 'C'
+SELECT COUNT (grupo) FROM teste WHERE grupo = 'D'
