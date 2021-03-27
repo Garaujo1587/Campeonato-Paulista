@@ -66,20 +66,92 @@ PRIMARY KEY (codigoTime)
 FOREIGN KEY (codigoTime) REFERENCES times (codigoTime)
 )
 select * from times
-	
-DECLARE @var INT
-SET @var = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
 
-INSERT INTO teste VALUES
-('A', @var)
+-- Inserindo os times grandes nos grupos de forma aleatoria
+DECLARE @cta INT,
+		@time INT,
+		@grupo CHAR(1)
 
-SELECT * FROM teste
-ORDER BY grupo
+	SET @cta = 0
+	SET @grupo = 'A'
 
-IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'A') = 4)
+WHILE (@cta < 4)
 BEGIN
-	PRINT 'Grupo A formado'
+	SET @time = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+
+	IF EXISTS (SELECT * FROM teste WHERE codigoTime = @time)
+	BEGIN
+		PRINT 'Já foi inserido'
+	END
+	ELSE 
+	BEGIN
+	IF (@time = 3 OR @time = 10 OR @time = 13 OR @time = 16)
+	BEGIN
+		IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'A') = 1)
+		BEGIN
+			PRINT 'Grupo A com time grande'
+			SET @grupo = 'B'
+		END
+		IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'B') = 1)
+		BEGIN
+			PRINT 'Grupo B com time grande'
+			SET @grupo = 'C'
+		END
+		IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'C') = 1)
+		BEGIN
+			PRINT 'Grupo C com time grande'
+			SET @grupo = 'D'
+		END
+		IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'D') = 1)
+		BEGIN
+			PRINT 'Grupo D com time grande'
+		END
+		INSERT INTO teste VALUES
+		(@grupo, @time)
+		SET @cta = @cta + 1
+	END
+	END
 END
-SELECT COUNT (grupo) FROM teste WHERE grupo = 'B'
-SELECT COUNT (grupo) FROM teste WHERE grupo = 'C'
-SELECT COUNT (grupo) FROM teste WHERE grupo = 'D'
+
+-- Inserindo os outros times	
+	SET @grupo = 'A'
+
+WHILE (@cta < 16)
+BEGIN
+
+	SET @time = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+
+IF EXISTS (SELECT * FROM teste WHERE codigoTime = @time)
+BEGIN
+	PRINT 'Já foi inserido'
+END
+ELSE 
+BEGIN
+	IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'A') = 4)
+	BEGIN
+		PRINT 'Grupo A formado'
+		SET @grupo = 'B'
+	END
+	IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'B') = 4)
+	BEGIN
+		PRINT 'Grupo B formado'
+		SET @grupo = 'C'
+	END
+	IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'C') = 4)
+	BEGIN
+		PRINT 'Grupo C formado'
+		SET @grupo = 'D'
+	END
+	IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'D') = 4)
+	BEGIN
+		PRINT 'Grupo D formado'
+		PRINT 'Todos os grupos estão completos'
+	END
+INSERT INTO teste VALUES
+(@grupo, @time)
+SET @cta = @cta + 1
+END
+END
+
+SELECT te.grupo, te.codigoTime, t.nomeTime FROM teste te, times t WHERE t.codigoTime = te.codigoTime
+ORDER BY grupo
