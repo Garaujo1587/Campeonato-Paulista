@@ -46,27 +46,18 @@ INSERT INTO times VALUES
 (15, 'São Caetano',	'São Caetano do Sul', 'Anacletto Campanella'),
 (16, 'São Paulo', 'São Paulo', 'Morumbi')
 
-CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT) 
-AS
 
-SELECT TOP 4 t.codigoTime FROM times t ORDER BY NEWID()
-/*
-Select cast(RAND(checksum(newid()))*17 as int )
-
-SELECT ABS(CHECKSUM(NewId())) % 17
-
-SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
-
-*/
-
+-- tabela teste que representa os grupos
 CREATE TABLE teste (
 grupo CHAR(1) NOT NULL,  
 codigoTime INT NOT NULL
 PRIMARY KEY (codigoTime)
 FOREIGN KEY (codigoTime) REFERENCES times (codigoTime)
 )
-select * from times
 
+
+CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT) 
+AS
 -- Inserindo os times grandes nos grupos de forma aleatoria
 DECLARE @cta INT,
 		@time INT,
@@ -152,6 +143,26 @@ INSERT INTO teste VALUES
 SET @cta = @cta + 1
 END
 END
+SET @saida = 'Todos os grupos estão completos'
 
+-- mostrando os grupos formados
 SELECT te.grupo, te.codigoTime, t.nomeTime FROM teste te, times t WHERE t.codigoTime = te.codigoTime
 ORDER BY grupo
+
+-- chamando ã procedure para formar os grupos
+DECLARE @out VARCHAR(MAX)
+EXEC sp_criando_grupos @out OUTPUT
+PRINT @out
+
+/*
+Formas de gerar números aleatórios
+
+SELECT TOP 4 t.codigoTime FROM times t ORDER BY NEWID()
+
+Select cast(RAND(checksum(newid()))*17 as int )
+
+SELECT ABS(CHECKSUM(NewId())) % 17
+
+SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
+
+*/
