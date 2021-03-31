@@ -46,16 +46,6 @@ INSERT INTO times VALUES
 (15, 'São Caetano',	'São Caetano do Sul', 'Anacletto Campanella'),
 (16, 'São Paulo', 'São Paulo', 'Morumbi')
 
-
--- tabela teste que representa os grupos
-CREATE TABLE teste (
-grupo CHAR(1) NOT NULL,  
-codigoTime INT NOT NULL
-PRIMARY KEY (codigoTime)
-FOREIGN KEY (codigoTime) REFERENCES times (codigoTime)
-)
-
-
 CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT) 
 AS
 -- Inserindo os times grandes nos grupos de forma aleatoria
@@ -70,37 +60,26 @@ WHILE (@cta < 4)
 BEGIN
 	SET @time = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
 
-	IF EXISTS (SELECT * FROM teste WHERE codigoTime = @time)
+	IF NOT EXISTS (SELECT * FROM grupos WHERE codigoTime = @time)
 	BEGIN
-		PRINT 'Já foi inserido'
-	END
-	ELSE 
-	BEGIN
-	IF (@time = 3 OR @time = 10 OR @time = 13 OR @time = 16)
-	BEGIN
-		IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'A') = 1)
+		IF (@time = 3 OR @time = 10 OR @time = 13 OR @time = 16)
 		BEGIN
-			PRINT 'Grupo A com time grande'
-			SET @grupo = 'B'
+			IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'A') = 1)
+			BEGIN
+				SET @grupo = 'B'
+			END
+			IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'B') = 1)
+			BEGIN
+				SET @grupo = 'C'
+			END
+			IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'C') = 1)
+			BEGIN
+				SET @grupo = 'D'
+			END
+			INSERT INTO grupos VALUES
+			(@grupo, @time)
+			SET @cta = @cta + 1
 		END
-		IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'B') = 1)
-		BEGIN
-			PRINT 'Grupo B com time grande'
-			SET @grupo = 'C'
-		END
-		IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'C') = 1)
-		BEGIN
-			PRINT 'Grupo C com time grande'
-			SET @grupo = 'D'
-		END
-		IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'D') = 1)
-		BEGIN
-			PRINT 'Grupo D com time grande'
-		END
-		INSERT INTO teste VALUES
-		(@grupo, @time)
-		SET @cta = @cta + 1
-	END
 	END
 END
 
@@ -112,44 +91,32 @@ BEGIN
 
 	SET @time = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
 
-IF EXISTS (SELECT * FROM teste WHERE codigoTime = @time)
-BEGIN
-	PRINT 'Já foi inserido'
-END
-ELSE 
-BEGIN
-	IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'A') = 4)
+	IF NOT EXISTS (SELECT * FROM grupos WHERE codigoTime = @time)
 	BEGIN
-		PRINT 'Grupo A formado'
-		SET @grupo = 'B'
+		IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'A') = 4)
+		BEGIN
+			SET @grupo = 'B'
+		END
+		IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'B') = 4)
+		BEGIN
+			SET @grupo = 'C'
+		END
+		IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'C') = 4)
+		BEGIN
+			SET @grupo = 'D'
+		END
+	INSERT INTO grupos VALUES
+	(@grupo, @time)
+	SET @cta = @cta + 1
 	END
-	IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'B') = 4)
-	BEGIN
-		PRINT 'Grupo B formado'
-		SET @grupo = 'C'
-	END
-	IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'C') = 4)
-	BEGIN
-		PRINT 'Grupo C formado'
-		SET @grupo = 'D'
-	END
-	IF ((SELECT COUNT (grupo) FROM teste WHERE grupo = 'D') = 4)
-	BEGIN
-		PRINT 'Grupo D formado'
-		PRINT 'Todos os grupos estão completos'
-	END
-INSERT INTO teste VALUES
-(@grupo, @time)
-SET @cta = @cta + 1
-END
 END
 SET @saida = 'Todos os grupos estão completos'
 
 -- mostrando os grupos formados
-SELECT te.grupo, te.codigoTime, t.nomeTime FROM teste te, times t WHERE t.codigoTime = te.codigoTime
+SELECT g.grupo, g.codigoTime, t.nomeTime FROM grupos g, times t WHERE t.codigoTime = g.codigoTime
 ORDER BY grupo
 
--- chamando ã procedure para formar os grupos
+-- chamando a procedure para formar os grupos
 DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_grupos @out OUTPUT
 PRINT @out
