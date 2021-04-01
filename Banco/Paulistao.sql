@@ -17,7 +17,7 @@ PRIMARY KEY (codigoTime)
 FOREIGN KEY (codigoTime) REFERENCES times (codigoTime)
 )
 
-CREATE TABLE Jogos (
+CREATE TABLE jogos (
 codigoTimeA INT NOT NULL,  
 codigoTimeB INT NOT NULL,
 golsTimeA INT, 
@@ -162,7 +162,18 @@ SET @ctajogo = 0
 		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
 		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
 		
-		IF (@timeA <> @timeB AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) <> (SELECT grupo FROM grupos WHERE codigoTime = @timeB))
+		IF (@timeA <> @timeB 
+		AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) <> (SELECT grupo FROM grupos WHERE codigoTime = @timeB)
+		AND NOT EXISTS(SELECT * FROM jogos WHERE codigoTimeA = @timeA AND codigoTimeB = @timeB)
+		AND NOT EXISTS(SELECT t.codigoTime, j.data FROM jogos j, times t 
+		WHERE j.codigoTimeA = t.codigoTime AND data = @dtjogo AND j.codigoTimeA = @timeA AND t.codigoTime = @timeA
+		OR j.codigoTimeB = t.codigoTime AND data = @dtjogo AND j.codigoTimeB = @timeB AND t.codigoTime = @timeB)
+/*		AND NOT EXISTS(SELECT j.codigoTimeA, j.codigoTimeB FROM jogos j 
+		WHERE j.codigoTimeA = @timeA AND j.codigoTimeB = @timeB AND j.data = @dtjogo)
+		AND NOT EXISTS(SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeA AND j.data = @dtjogo)
+		AND NOT EXISTS(SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeB AND j.data = @dtjogo)
+		AND NOT EXISTS(SELECT * FROM jogos WHERE data = @dtjogo AND codigoTimeA = @timeA OR codigoTimeB = @timeA AND data = @dtjogo)
+		AND NOT EXISTS(SELECT * FROM jogos WHERE data = @dtjogo AND codigoTimeA = @timeB OR codigoTimeB = @timeB AND data = @dtjogo)*/)
 		BEGIN
 			INSERT INTO jogos VALUES 
 			(@timeA, @timeB, NULL, NULL, @dtjogo)
@@ -173,7 +184,7 @@ SET @ctajogo = 0
 END
 SET @saida = 'Rodadas geradas'
 
-DROP TABLE Jogos
+DROP TABLE jogos
 -- mostrando os jogos
 SELECT * FROM jogos j 
 ORDER BY data
@@ -182,3 +193,7 @@ ORDER BY data
 DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_rodadas @out OUTPUT
 PRINT @out
+
+SELECT COUNT(*), t.codigoTime, j.data FROM jogos j, times t WHERE j.codigoTimeA = t.codigoTime AND data = '2019-01-20' OR j.codigoTimeB = t.codigoTime AND data = '2019-01-20' 
+GROUP BY t.codigoTime, j.data
+HAVING COUNT(*)>1
