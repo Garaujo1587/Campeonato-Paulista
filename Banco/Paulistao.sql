@@ -133,3 +133,52 @@ SELECT ABS(CHECKSUM(NewId())) % 17
 SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
 
 */
+
+CREATE PROCEDURE sp_criando_rodadas (@saida VARCHAR(MAX) OUTPUT)
+AS
+
+DECLARE @ctarodada AS INT,
+		@ctajogo AS INT,
+		@timeA AS INT,
+		@timeB AS INT,
+		@dtjogo AS DATE
+
+SET @ctarodada = 0
+SET @dtjogo = '2019-01-20'
+
+WHILE (@ctarodada < 12)
+BEGIN
+SET @ctajogo = 0
+	IF (@ctarodada <> 0 AND @ctarodada % 2 = 0)
+	BEGIN 
+		SET @dtjogo = (DATEADD(DAY, 3, @dtjogo))
+	END
+	IF (@ctarodada % 2 <> 0)
+	BEGIN
+		SET @dtjogo = (DATEADD(DAY, 4, @dtjogo))
+	END
+	WHILE (@ctajogo < 8)
+	BEGIN
+		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+		
+		IF (@timeA <> @timeB AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) <> (SELECT grupo FROM grupos WHERE codigoTime = @timeB))
+		BEGIN
+			INSERT INTO jogos VALUES 
+			(@timeA, @timeB, NULL, NULL, @dtjogo)
+			SET @ctajogo = @ctajogo + 1	  
+		END
+	END
+	SET @ctarodada = @ctarodada + 1
+END
+SET @saida = 'Rodadas geradas'
+
+DROP TABLE Jogos
+-- mostrando os jogos
+SELECT * FROM jogos j 
+ORDER BY data
+
+-- chamando a procedure para gerar os jogos e as rodadas
+DECLARE @out VARCHAR(MAX)
+EXEC sp_criando_rodadas @out OUTPUT
+PRINT @out
