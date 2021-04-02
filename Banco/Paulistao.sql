@@ -46,6 +46,8 @@ INSERT INTO times VALUES
 (15, 'São Caetano',	'São Caetano do Sul', 'Anacletto Campanella'),
 (16, 'São Paulo', 'São Paulo', 'Morumbi')
 
+-- PROCEDURE QUE GERA OS GRUPOS ALEATORIAMENTE E COM AS REGRAS DO CAMPEONATO
+
 CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT) 
 AS
 -- Inserindo os times grandes nos grupos de forma aleatoria
@@ -134,6 +136,8 @@ SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
 
 */
 
+-- PROCEDURE QUE GERA OS JOGOS E AS RODADAS - INCOMPLETA
+
 CREATE PROCEDURE sp_criando_rodadas (@saida VARCHAR(MAX) OUTPUT)
 AS
 
@@ -149,11 +153,11 @@ SET @dtjogo = '2019-01-20'
 WHILE (@ctarodada < 12)
 BEGIN
 SET @ctajogo = 0
-	IF (@ctarodada <> 0 AND @ctarodada % 2 = 0)
+	IF (@ctarodada <> 0 AND @ctarodada % 2 <> 0)
 	BEGIN 
 		SET @dtjogo = (DATEADD(DAY, 3, @dtjogo))
 	END
-	IF (@ctarodada % 2 <> 0)
+	IF (@ctarodada <> 0 AND @ctarodada % 2 = 0)
 	BEGIN
 		SET @dtjogo = (DATEADD(DAY, 4, @dtjogo))
 	END
@@ -168,12 +172,13 @@ SET @ctajogo = 0
 		AND NOT EXISTS(SELECT t.codigoTime, j.data FROM jogos j, times t 
 		WHERE j.codigoTimeA = t.codigoTime AND data = @dtjogo AND j.codigoTimeA = @timeA AND t.codigoTime = @timeA
 		OR j.codigoTimeB = t.codigoTime AND data = @dtjogo AND j.codigoTimeB = @timeB AND t.codigoTime = @timeB)
-/*		AND NOT EXISTS(SELECT j.codigoTimeA, j.codigoTimeB FROM jogos j 
-		WHERE j.codigoTimeA = @timeA AND j.codigoTimeB = @timeB AND j.data = @dtjogo)
-		AND NOT EXISTS(SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeA AND j.data = @dtjogo)
-		AND NOT EXISTS(SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeB AND j.data = @dtjogo)
-		AND NOT EXISTS(SELECT * FROM jogos WHERE data = @dtjogo AND codigoTimeA = @timeA OR codigoTimeB = @timeA AND data = @dtjogo)
-		AND NOT EXISTS(SELECT * FROM jogos WHERE data = @dtjogo AND codigoTimeA = @timeB OR codigoTimeB = @timeB AND data = @dtjogo)*/)
+		AND NOT EXISTS (SELECT COUNT(*), t.codigoTime, j.data 
+		FROM jogos j INNER JOIN times t
+		ON t.codigoTime = j.codigoTimeA AND j.codigoTimeA = @timeA AND data = @dtjogo
+		OR t.codigoTime = j.codigoTimeB AND j.codigoTimeB = @timeB AND data = @dtjogo
+		WHERE data = @dtjogo
+		GROUP BY t.codigoTime, j.data
+		HAVING COUNT(*)>1)) 
 		BEGIN
 			INSERT INTO jogos VALUES 
 			(@timeA, @timeB, NULL, NULL, @dtjogo)
@@ -184,7 +189,6 @@ SET @ctajogo = 0
 END
 SET @saida = 'Rodadas geradas'
 
-DROP TABLE jogos
 -- mostrando os jogos
 SELECT * FROM jogos j 
 ORDER BY data
@@ -194,6 +198,10 @@ DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_rodadas @out OUTPUT
 PRINT @out
 
-SELECT COUNT(*), t.codigoTime, j.data FROM jogos j, times t WHERE j.codigoTimeA = t.codigoTime AND data = '2019-01-20' OR j.codigoTimeB = t.codigoTime AND data = '2019-01-20' 
+-- select que mostra o problema: um time não pode jogar duas vezes na mesma rodada(data)
+SELECT COUNT(*), t.codigoTime, j.data 
+FROM jogos j INNER JOIN times t
+ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB 
+WHERE data = '2019-01-20' 
 GROUP BY t.codigoTime, j.data
 HAVING COUNT(*)>1
