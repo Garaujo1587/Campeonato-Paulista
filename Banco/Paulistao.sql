@@ -169,16 +169,13 @@ SET @ctajogo = 0
 		IF (@timeA <> @timeB 
 		AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) <> (SELECT grupo FROM grupos WHERE codigoTime = @timeB)
 		AND NOT EXISTS(SELECT * FROM jogos WHERE codigoTimeA = @timeA AND codigoTimeB = @timeB)
-		AND NOT EXISTS(SELECT t.codigoTime, j.data FROM jogos j, times t 
-		WHERE j.codigoTimeA = t.codigoTime AND data = @dtjogo AND j.codigoTimeA = @timeA AND t.codigoTime = @timeA
-		OR j.codigoTimeB = t.codigoTime AND data = @dtjogo AND j.codigoTimeB = @timeB AND t.codigoTime = @timeB)
-		AND NOT EXISTS (SELECT COUNT(*), t.codigoTime, j.data 
-		FROM jogos j INNER JOIN times t
-		ON t.codigoTime = j.codigoTimeA AND j.codigoTimeA = @timeA AND data = @dtjogo
-		OR t.codigoTime = j.codigoTimeB AND j.codigoTimeB = @timeB AND data = @dtjogo
-		WHERE data = @dtjogo
-		GROUP BY t.codigoTime, j.data
-		HAVING COUNT(*)>1)) 
+		AND NOT EXISTS(SELECT * FROM jogos j, times t 
+		WHERE j.codigoTimeA = t.codigoTime AND data = @dtjogo AND j.codigoTimeA = @timeA
+		OR j.codigoTimeB = t.codigoTime AND data = @dtjogo AND j.codigoTimeB = @timeB)
+/*		AND NOT EXISTS(SELECT codigoTimeA, codigoTimeB FROM jogos WHERE codigoTimeA = @timeA AND data = @dtjogo
+		OR codigoTimeB = @timeA AND data = @dtjogo) 
+		AND NOT EXISTS(SELECT codigoTimeA, codigoTimeB FROM jogos WHERE codigoTimeA = @timeB AND data = @dtjogo
+		OR codigoTimeB = @timeB AND data = @dtjogo)*/)
 		BEGIN
 			INSERT INTO jogos VALUES 
 			(@timeA, @timeB, NULL, NULL, @dtjogo)
@@ -205,3 +202,8 @@ ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB
 WHERE data = '2019-01-20' 
 GROUP BY t.codigoTime, j.data
 HAVING COUNT(*)>1
+
+-- select que mostra como deve ficar, um time joga apenas uma rodada(data)
+SELECT t.codigoTime, j.data FROM times t, jogos j
+WHERE t.codigoTime = j.codigoTimeA AND data = '2019-01-20' 
+OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
