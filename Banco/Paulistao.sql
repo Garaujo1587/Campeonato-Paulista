@@ -50,6 +50,7 @@ INSERT INTO times VALUES
 
 CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT) 
 AS
+	DELETE FROM times
 -- Inserindo os times grandes nos grupos de forma aleatoria
 DECLARE @cta INT,
 		@time INT,
@@ -140,7 +141,7 @@ SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
 
 CREATE PROCEDURE sp_criando_rodadas (@saida VARCHAR(MAX) OUTPUT)
 AS
-
+	DELETE FROM jogos
 DECLARE @ctarodada AS INT,
 		@ctajogo AS INT,
 		@timeA AS INT,
@@ -163,9 +164,19 @@ SET @ctajogo = 0
 	END
 	WHILE (@ctajogo < 8)
 	BEGIN
+
 		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
 		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
-		
+
+	WHILE (@timeA = (SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeA AND j.data = @dtjogo) 
+	OR @timeA = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeA AND j.data = @dtjogo)
+	AND @timeB = (SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeB AND j.data = @dtjogo) 
+	OR @timeB = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeB AND j.data = @dtjogo))
+	BEGIN
+		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+	END		
+
 		IF (@timeA <> @timeB 
 		AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) <> (SELECT grupo FROM grupos WHERE codigoTime = @timeB)
 		AND NOT EXISTS(SELECT * FROM jogos WHERE codigoTimeA = @timeA AND codigoTimeB = @timeB)
