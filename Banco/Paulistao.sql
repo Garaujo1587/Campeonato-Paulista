@@ -203,10 +203,6 @@ DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_rodadas @out OUTPUT
 PRINT @out
 
-<<<<<<< HEAD
--- select que mostra o problema: um time não pode jogar duas vezes na mesma rodada(data)
-=======
-*/
 
 -- PROCEDURE QUE GERA OS JOGOS E AS RODADAS - INCOMPLETA
 
@@ -278,7 +274,7 @@ EXEC sp_criando_rodadas @out OUTPUT
 PRINT @out
 
 -- select que mostra o problema: um time n�o pode jogar duas vezes na mesma rodada(data)
->>>>>>> 02ac59e48550590a16095a9b9513b4e3ce851dc2
+
 SELECT COUNT(*), t.codigoTime, j.data 
 FROM jogos j INNER JOIN times t
 ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB 
