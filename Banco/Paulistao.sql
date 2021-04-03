@@ -17,7 +17,7 @@ PRIMARY KEY (codigoTime)
 FOREIGN KEY (codigoTime) REFERENCES times (codigoTime)
 )
 
-CREATE TABLE Jogos (
+CREATE TABLE jogos (
 codigoTimeA INT NOT NULL,  
 codigoTimeB INT NOT NULL,
 golsTimeA INT, 
@@ -29,25 +29,28 @@ FOREIGN KEY(codigoTimeB) REFERENCES times (codigoTime)
 ) 
 
 INSERT INTO times VALUES 
-(1, 'Botafogo-SP', 'Ribeirão Preto', 'Santa Cruz'),
+(1, 'Botafogo-SP', 'RibeirÃ£o Preto', 'Santa Cruz'),
 (2, 'Bragantino', 'Bragantino Paulista', 'Nabi Abi Chedid'),
-(3, 'Corinthians', 'São Paulo',	'Arena Corinthians'),
-(4, 'Ferroviária', 'Araraquara', 'Fonte Luminosa'),
+(3, 'Corinthians', 'SÃ£o Paulo',	'Arena Corinthians'),
+(4, 'FerroviÃ¡ria', 'Araraquara', 'Fonte Luminosa'),
 (5, 'Guarani', 'Campinas', 'Brinco de Ouro da Princesa'),
-(6, 'Ituano', 'Itu', 'Novelli Júnior'),
-(7, 'Mirassol',	'Mirassol', 'José Maria de Campos Maia'),
+(6, 'Ituano', 'Itu', 'Novelli JÃºnior'),
+(7, 'Mirassol',	'Mirassol', 'JosÃ© Maria de Campos Maia'),
 (8, 'Novorizontino', 'Novo Horizonte', 'Jorge Ismael de Biasi'),
 (9, 'Oeste', 'Barueri',	'Arena Barueri'),
-(10, 'Palmeiras', 'São Paulo', 'Allianz Parque'),
-(11, 'Ponte Preta', 'Campinas',	'Moisés Lucarelli'),
-(12, 'Red Bull Brasil',	'Campinas',	'Moisés Lucarelli'),
+(10, 'Palmeiras', 'SÃ£o Paulo', 'Allianz Parque'),
+(11, 'Ponte Preta', 'Campinas',	'MoisÃ©s Lucarelli'),
+(12, 'Red Bull Brasil',	'Campinas',	'MoisÃ©s Lucarelli'),
 (13, 'Santos', 'Santos', 'Vila Belmiro'),
-(14, 'São Bento', 'Sorocaba', 'Walter Ribeiro'),
-(15, 'São Caetano',	'São Caetano do Sul', 'Anacletto Campanella'),
-(16, 'São Paulo', 'São Paulo', 'Morumbi')
+(14, 'SÃ£o Bento', 'Sorocaba', 'Walter Ribeiro'),
+(15, 'SÃ£o Caetano',	'SÃ£o Caetano do Sul', 'Anacletto Campanella'),
+(16, 'SÃ£o Paulo', 'SÃ£o Paulo', 'Morumbi')
+
+-- PROCEDURE QUE GERA OS GRUPOS ALEATORIAMENTE E COM AS REGRAS DO CAMPEONATO
 
 CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT) 
 AS
+	DELETE FROM times
 -- Inserindo os times grandes nos grupos de forma aleatoria
 DECLARE @cta INT,
 		@time INT,
@@ -110,7 +113,7 @@ BEGIN
 	SET @cta = @cta + 1
 	END
 END
-SET @saida = 'Todos os grupos estão completos'
+SET @saida = 'Todos os grupos estÃ£o completos'
 
 -- mostrando os grupos formados
 SELECT g.grupo, g.codigoTime, t.nomeTime FROM grupos g, times t WHERE t.codigoTime = g.codigoTime
@@ -122,14 +125,91 @@ EXEC sp_criando_grupos @out OUTPUT
 PRINT @out
 
 /*
-Formas de gerar números aleatórios
-
+Formas de gerar nÃºmeros aleatÃ³rios
 SELECT TOP 4 t.codigoTime FROM times t ORDER BY NEWID()
-
 Select cast(RAND(checksum(newid()))*17 as int )
-
 SELECT ABS(CHECKSUM(NewId())) % 17
-
 SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
-
 */
+
+-- PROCEDURE QUE GERA OS JOGOS E AS RODADAS - INCOMPLETA
+
+CREATE PROCEDURE sp_criando_rodadas (@saida VARCHAR(MAX) OUTPUT)
+AS
+	DELETE FROM jogos
+DECLARE @ctarodada AS INT,
+		@ctajogo AS INT,
+		@timeA AS INT,
+		@timeB AS INT,
+		@dtjogo AS DATE
+
+SET @ctarodada = 0
+SET @dtjogo = '2019-01-20'
+
+WHILE (@ctarodada < 12)
+BEGIN
+SET @ctajogo = 0
+	IF (@ctarodada <> 0 AND @ctarodada % 2 <> 0)
+	BEGIN 
+		SET @dtjogo = (DATEADD(DAY, 3, @dtjogo))
+	END
+	IF (@ctarodada <> 0 AND @ctarodada % 2 = 0)
+	BEGIN
+		SET @dtjogo = (DATEADD(DAY, 4, @dtjogo))
+	END
+	WHILE (@ctajogo < 8)
+	BEGIN
+
+		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+
+	WHILE (@timeA = (SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeA AND j.data = @dtjogo) 
+	OR @timeA = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeA AND j.data = @dtjogo)
+	AND @timeB = (SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeB AND j.data = @dtjogo) 
+	OR @timeB = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeB AND j.data = @dtjogo))
+	BEGIN
+		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+	END		
+
+		IF (@timeA <> @timeB 
+		AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) <> (SELECT grupo FROM grupos WHERE codigoTime = @timeB)
+		AND NOT EXISTS(SELECT * FROM jogos WHERE codigoTimeA = @timeA AND codigoTimeB = @timeB)
+		AND NOT EXISTS(SELECT * FROM jogos j, times t 
+		WHERE j.codigoTimeA = t.codigoTime AND data = @dtjogo AND j.codigoTimeA = @timeA
+		OR j.codigoTimeB = t.codigoTime AND data = @dtjogo AND j.codigoTimeB = @timeB)
+/*		AND NOT EXISTS(SELECT codigoTimeA, codigoTimeB FROM jogos WHERE codigoTimeA = @timeA AND data = @dtjogo
+		OR codigoTimeB = @timeA AND data = @dtjogo) 
+		AND NOT EXISTS(SELECT codigoTimeA, codigoTimeB FROM jogos WHERE codigoTimeA = @timeB AND data = @dtjogo
+		OR codigoTimeB = @timeB AND data = @dtjogo)*/)
+		BEGIN
+			INSERT INTO jogos VALUES 
+			(@timeA, @timeB, NULL, NULL, @dtjogo)
+			SET @ctajogo = @ctajogo + 1	  
+		END
+	END
+	SET @ctarodada = @ctarodada + 1
+END
+SET @saida = 'Rodadas geradas'
+
+-- mostrando os jogos
+SELECT * FROM jogos j 
+ORDER BY data
+
+-- chamando a procedure para gerar os jogos e as rodadas
+DECLARE @out VARCHAR(MAX)
+EXEC sp_criando_rodadas @out OUTPUT
+PRINT @out
+
+-- select que mostra o problema: um time nÃ£o pode jogar duas vezes na mesma rodada(data)
+SELECT COUNT(*), t.codigoTime, j.data 
+FROM jogos j INNER JOIN times t
+ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB 
+WHERE data = '2019-01-20' 
+GROUP BY t.codigoTime, j.data
+HAVING COUNT(*)>1
+
+-- select que mostra como deve ficar, um time joga apenas uma rodada(data)
+SELECT t.codigoTime, j.data FROM times t, jogos j
+WHERE t.codigoTime = j.codigoTimeA AND data = '2019-01-20' 
+OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
