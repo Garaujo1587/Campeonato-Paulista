@@ -138,7 +138,7 @@ SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
 <<<<<<< HEAD
 =======
 */
->>>>>>> e5f9ca620a5d195e0e7f328fd0841a7fdd904e10
+>>>>>>> e5f9ca620a51395e0e7f328fd0841a7fdd904e10
 
 -- PROCEDURE QUE GERA OS JOGOS E AS RODADAS - INCOMPLETA
 
@@ -216,7 +216,7 @@ PRINT @out
 
 =======
 -- select que mostra o problema: um time n�o pode jogar duas vezes na mesma rodada(data)
->>>>>>> e5f9ca620a5d195e0e7f328fd0841a7fdd904e10
+>>>>>>> e5f9ca620a51395e0e7f328fd0841a7fdd904e10
 SELECT COUNT(*), t.codigoTime, j.data 
 FROM jogos j INNER JOIN times t
 ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB 
