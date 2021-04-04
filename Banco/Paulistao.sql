@@ -134,11 +134,11 @@ Select cast(RAND(checksum(newid()))*17 as int )
 SELECT ABS(CHECKSUM(NewId())) % 17
 
 SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
-
-<<<<<<< HEAD
-=======
 */
+<<<<<<< HEAD
 >>>>>>> e5f9ca620a51395e0e7f328fd0841a7fdd904e10
+=======
+>>>>>>> 11102bdbffbf8dfaf9c5e345427eb480fd36d052
 
 -- PROCEDURE QUE GERA OS JOGOS E AS RODADAS - INCOMPLETA
 
@@ -174,12 +174,11 @@ SET @ctajogo = 0
 	WHILE (@timeA = (SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeA AND j.data = @dtjogo) 
 	OR @timeA = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeA AND j.data = @dtjogo)
 	AND @timeB = (SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeB AND j.data = @dtjogo) 
-	OR @timeB = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeB AND j.data = @dtjogo))
-	BEGIN
+	OR @timeB = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeB AND j.data = @dtjogo)) 
+	BEGIN 
 		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
-		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
-	END		
-
+		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())		
+	END
 		IF (@timeA <> @timeB 
 		AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) <> (SELECT grupo FROM grupos WHERE codigoTime = @timeB)
 		AND NOT EXISTS(SELECT * FROM jogos WHERE codigoTimeA = @timeA AND codigoTimeB = @timeB)
@@ -195,7 +194,12 @@ SET @ctajogo = 0
 		BEGIN
 			INSERT INTO jogos VALUES 
 			(@timeA, @timeB, NULL, NULL, @dtjogo)
-			SET @ctajogo = @ctajogo + 1	  
+			SET @ctajogo = @ctajogo + 1	 
+			IF (@ctajogo = 7 AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) = (SELECT grupo FROM grupos WHERE codigoTime = @timeB))
+			BEGIN
+				DELETE FROM jogos WHERE data = @dtjogo
+				SET @dtjogo = @dtjogo
+			END 
 		END
 	END
 	SET @ctarodada = @ctarodada + 1
@@ -211,12 +215,11 @@ DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_rodadas @out OUTPUT
 PRINT @out
 
+-- select que mostra o problema: um time n�o pode jogar duas vezes na mesma rodada(data)
 <<<<<<< HEAD
--- select que mostra o problema: um time n�o pode jogar duas vezes na mesma rodada(data)
-
-=======
--- select que mostra o problema: um time n�o pode jogar duas vezes na mesma rodada(data)
 >>>>>>> e5f9ca620a51395e0e7f328fd0841a7fdd904e10
+=======
+>>>>>>> 11102bdbffbf8dfaf9c5e345427eb480fd36d052
 SELECT COUNT(*), t.codigoTime, j.data 
 FROM jogos j INNER JOIN times t
 ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB 
@@ -226,5 +229,6 @@ HAVING COUNT(*)>1
 
 -- select que mostra como deve ficar, um time joga apenas uma rodada(data)
 SELECT t.codigoTime, j.data FROM times t, jogos j
-WHERE t.codigoTime = j.codigoTimeA AND data = '2019-01-20' 
-OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
+WHERE t.codigoTime = j.codigoTimeA AND data = '2019-02-24' 
+OR t.codigoTime = j.codigoTimeB AND data = '2019-02-24'
+ORDER BY t.codigoTime
