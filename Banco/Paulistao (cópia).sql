@@ -359,3 +359,19 @@ SELECT t.codigoTime, j.data FROM times t, jogos j
 WHERE t.codigoTime = j.codigoTimeA AND data = '2019-01-20' 
 OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
 
+
+
+-- PROCEDURE QUE BUSCA TODOS OS JOGOS DE UMA DATA
+
+CREATE PROCEDURE sp_busca_jogo (@dt VARCHAR(10), @saida VARCHAR(MAX) OUTPUT) 
+AS
+
+SELECT codigoTimeA, codigoTimeB, data FROM jogos WHERE data = @dt
+
+SET @saida = 'Busca dos jogos do dia ' + @dt + ' feita'
+
+
+-- chamando a procedure que busca jogos
+DECLARE @out VARCHAR(MAX)
+EXEC sp_busca_jogo '2019-01-20', @out OUTPUT
+PRINT @out
