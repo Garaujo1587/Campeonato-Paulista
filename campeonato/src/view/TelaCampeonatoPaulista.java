@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 
 import javax.swing.JButton;
@@ -14,6 +15,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
+
+import controller.ControllerGrupo;
+import controller.ControllerRodada;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -88,6 +93,11 @@ public class TelaCampeonatoPaulista extends JFrame {
 		JTextArea taGrupos = new JTextArea();
 		spInicial.setViewportView(taGrupos);
 		
+		// Acao do botão gerar grupos
+		
+		ActionListener chamadaGrupos = new ControllerGrupo();
+		btnGrupos.addActionListener(chamadaGrupos);
+		
 	// Tela que mostra os grupos formados
 		JPanel pGrupos = new JPanel();
 		tabbedPane.addTab("Grupos", null, pGrupos, null);
@@ -140,6 +150,11 @@ public class TelaCampeonatoPaulista extends JFrame {
 		JTextArea taRodadas = new JTextArea();
 		spRodadas.setViewportView(taRodadas);
 		taRodadas.setForeground(Color.WHITE);
+		
+		// Acao do botão gerar rodadas
+		
+		ActionListener chamadaRodadas = new ControllerRodada();
+		btnRodadas.addActionListener(chamadaRodadas);
 		
 	// Tela que busca as rodadas pela data que o usuário digitou
 		JPanel pBuscaRodadas = new JPanel();

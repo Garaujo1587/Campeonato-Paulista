@@ -14,7 +14,7 @@ private Connection c;
 		c = gDao.getConnection();
 	}
 	
-	public String procGeraGrupos() throws SQLException {
+	public String procGeraRodadas() throws SQLException {
 		String sql = "{CALL sp_criando_rodadas (?)}";
 		CallableStatement cs = c.prepareCall(sql);
 		cs.registerOutParameter(1, Types.VARCHAR);
