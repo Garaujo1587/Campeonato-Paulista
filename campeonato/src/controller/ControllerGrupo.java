@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import model.Times;
 import persistence.GrupoDao;
 
 public class ControllerGrupo implements ActionListener {
@@ -28,5 +29,11 @@ public class ControllerGrupo implements ActionListener {
 		String saida = gDao.procGeraGrupos();
 		JOptionPane.showMessageDialog(null, saida, "MENSAGEM", JOptionPane.INFORMATION_MESSAGE);
 		
+/*		Times times = gDao.mostraGrupos();
+		
+		StringBuffer sb = new StringBuffer("Grupo\t\t\tTime\t\t\t\t\tCodigo\n");
+		
+		sb.append() 
+		} */
 	}
 }

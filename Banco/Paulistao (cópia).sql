@@ -161,13 +161,12 @@ AS
 
 
 
-SET @saida = 'Todos os grupos estão completos'
-
+SET @saida = 'SELECT grupo, nomeTime FROM times'
 
 -- chamando a procedure para formar os grupos
 DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_grupos @out OUTPUT
-PRINT @out
+EXEC (@out)
 
 GO
 
@@ -334,17 +333,34 @@ AS
 	END
 
 
-SET @saida = 'Rodadas geradas'
+SET @saida = 'SELECT time1.nomeTime AS ''Mandante'', time2.nomeTime AS ''Visitante'', 
+time1.estadio AS ''Estadio'', time1.cidade AS ''Cidade'', data AS ''Data'' 
+FROM times AS time1
+INNER JOIN jogos
+ON time1.codigoTime = jogos.codigoTimeA
+INNER JOIN times AS time2
+ON time2.codigoTime = jogos.codigoTimeB
+ORDER BY data'
 
 
 
 -- chamando a procedure para gerar os jogos e as rodadas
 DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_rodadas @out OUTPUT
-PRINT @out
+EXEC (@out)
 
 -- mostrando os jogos
-SELECT * FROM jogos j 
+SELECT * FROM jogos 
+ORDER BY data
+
+-- saida da procedure gerar rodadas
+SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
+time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', data AS 'Data' 
+FROM times AS time1
+INNER JOIN jogos
+ON time1.codigoTime = jogos.codigoTimeA
+INNER JOIN times AS time2
+ON time2.codigoTime = jogos.codigoTimeB
 ORDER BY data
 
 SELECT COUNT(*), t.codigoTime, j.data 

@@ -6,6 +6,7 @@ public class Times {
 	private String nomeTime;
 	private String cidade;
 	private String estadio;
+	private String grupo;
 	
 	public int getCodigoTime() {
 		return codigoTime;
@@ -31,10 +32,17 @@ public class Times {
 	public void setEstadio(String estadio) {
 		this.estadio = estadio;
 	}
+	
+	public String getGrupo() {
+		return grupo;
+	}
+	public void setGrupo(String grupo) {
+		this.grupo = grupo;
+	}
 	@Override
 	public String toString() {
-		return "[codigoTime=" + codigoTime + ", nomeTime=" + nomeTime + ", cidade=" + cidade + ", estadio="
-				+ estadio + "]";
+		return "Times [codigoTime=" + codigoTime + ", nomeTime=" + nomeTime + ", cidade=" + cidade + ", estadio="
+				+ estadio + ", grupo=" + grupo + "]";
 	}
 	
 	

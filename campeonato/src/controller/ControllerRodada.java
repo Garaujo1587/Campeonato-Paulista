@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
-
+import javax.swing.JTextArea;
 
 import persistence.RodadaDao;
 

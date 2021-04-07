@@ -2,8 +2,12 @@ package persistence;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import model.Times;
 
 public class GrupoDao {
 
@@ -23,5 +27,23 @@ private Connection c;
 		cs.close();
 		
 		return saida;
+	}
+	
+	public Times mostraGrupos() throws SQLException {
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT t.grupo AS grupo, t.nomeTime AS time, t.codigoTime AS codigoTime FROM times t ");
+		PreparedStatement ps = c.prepareStatement(sql.toString());
+		ResultSet rs = ps.executeQuery();
+		
+		Times t = new Times();
+		
+		t.setGrupo(rs.getString("grupo"));
+		t.setNomeTime(rs.getString("time"));
+		t.setCodigoTime(rs.getInt("codigoTime"));
+		
+		rs.close();
+		ps.close();
+		
+		return t;
 	}
 }
