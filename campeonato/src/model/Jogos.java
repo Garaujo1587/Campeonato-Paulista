@@ -4,35 +4,35 @@ import java.sql.Date;
 
 public class Jogos {
 	
-	private int codigoTimeA;
-	private int codigoTimeB;
-	private int golsTimeA;
-	private int golsTimeB;
+	private String nomeTimeA;
+	private String nomeTimeB;
+	private String estadio;
+	private String cidade;
 	private Date data;
 	
-	public int getCodigoTimeA() {
-		return codigoTimeA;
+	public String getNomeTimeA() {
+		return nomeTimeA;
 	}
-	public void setCodigoTimeA(int codigoTimeA) {
-		this.codigoTimeA = codigoTimeA;
+	public void setNomeTimeA(String nomeTimeA) {
+		this.nomeTimeA = nomeTimeA;
 	}
-	public int getCodigoTimeB() {
-		return codigoTimeB;
+	public String getNomeTimeB() {
+		return nomeTimeB;
 	}
-	public void setCodigoTimeB(int codigoTimeB) {
-		this.codigoTimeB = codigoTimeB;
+	public void setNomeTimeB(String nomeTimeB) {
+		this.nomeTimeB = nomeTimeB;
 	}
-	public int getGolsTimeA() {
-		return golsTimeA;
+	public String getEstadio() {
+		return estadio;
 	}
-	public void setGolsTimeA(int golsTimeA) {
-		this.golsTimeA = golsTimeA;
+	public void setEstadio(String estadio) {
+		this.estadio = estadio;
 	}
-	public int getGolsTimeB() {
-		return golsTimeB;
+	public String getCidade() {
+		return cidade;
 	}
-	public void setGolsTimeB(int golsTimeB) {
-		this.golsTimeB = golsTimeB;
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
 	}
 	public Date getData() {
 		return data;
@@ -40,13 +40,11 @@ public class Jogos {
 	public void setData(Date data) {
 		this.data = data;
 	}
-	
 	@Override
 	public String toString() {
-		return "Jogos [codigoTimeA=" + codigoTimeA + ", codigoTimeB=" + codigoTimeB + ", golsTimeA=" + golsTimeA
-				+ ", golsTimeB=" + golsTimeB + ", data=" + data + "]";
+		return "Jogos [nomeTimeA=" + nomeTimeA + ", nomeTimeB=" + nomeTimeB + ", estadio=" + estadio + ", cidade="
+				+ cidade + ", data=" + data + "]";
 	}
-	
 	
 
 }

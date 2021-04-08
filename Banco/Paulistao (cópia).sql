@@ -161,12 +161,12 @@ AS
 
 
 
-SET @saida = 'SELECT grupo, nomeTime FROM times'
+SET @saida = 'Grupos gerados com sucesso'
 
 -- chamando a procedure para formar os grupos
 DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_grupos @out OUTPUT
-EXEC (@out)
+PRINT @out
 
 GO
 
@@ -333,21 +333,14 @@ AS
 	END
 
 
-SET @saida = 'SELECT time1.nomeTime AS ''Mandante'', time2.nomeTime AS ''Visitante'', 
-time1.estadio AS ''Estadio'', time1.cidade AS ''Cidade'', data AS ''Data'' 
-FROM times AS time1
-INNER JOIN jogos
-ON time1.codigoTime = jogos.codigoTimeA
-INNER JOIN times AS time2
-ON time2.codigoTime = jogos.codigoTimeB
-ORDER BY data'
+SET @saida = 'Rodadas geradas com sucesso'
 
 
 
 -- chamando a procedure para gerar os jogos e as rodadas
 DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_rodadas @out OUTPUT
-EXEC (@out)
+PRINT '@out'
 
 -- mostrando os jogos
 SELECT * FROM jogos 
@@ -379,13 +372,20 @@ OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
 
 -- PROCEDURE QUE BUSCA TODOS OS JOGOS DE UMA DATA
 
-CREATE PROCEDURE sp_busca_jogo (@dt VARCHAR(10), @saida VARCHAR(MAX) OUTPUT) 
+CREATE PROCEDURE sp_busca_jogo (@dt DATETIME, @saida VARCHAR(MAX) OUTPUT) 
 AS
 
-SELECT codigoTimeA, codigoTimeB, data FROM jogos WHERE data = @dt
+SET @dt = Format(CONVERT(date, @dt),'MM-dd-yyyy')
+
+SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', data AS 'Data' 
+FROM times AS time1
+INNER JOIN jogos
+ON time1.codigoTime = jogos.codigoTimeA
+INNER JOIN times AS time2
+ON time2.codigoTime = jogos.codigoTimeB
+WHERE data = @dt
 
 SET @saida = 'Busca dos jogos do dia ' + @dt + ' feita'
-
 
 -- chamando a procedure que busca jogos
 DECLARE @out VARCHAR(MAX)

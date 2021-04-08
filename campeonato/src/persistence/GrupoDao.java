@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Times;
 
@@ -29,21 +31,26 @@ private Connection c;
 		return saida;
 	}
 	
-	public Times mostraGrupos() throws SQLException {
+	public List<Times> mostraGrupos() throws SQLException {
+		List<Times> listaTimes = new ArrayList<Times>();
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT t.grupo AS grupo, t.nomeTime AS time, t.codigoTime AS codigoTime FROM times t ");
+		sql.append("SELECT t.grupo AS grupo, t.nomeTime AS time FROM times t ");
 		PreparedStatement ps = c.prepareStatement(sql.toString());
 		ResultSet rs = ps.executeQuery();
 		
+		while (rs.next()) {
 		Times t = new Times();
 		
 		t.setGrupo(rs.getString("grupo"));
 		t.setNomeTime(rs.getString("time"));
-		t.setCodigoTime(rs.getInt("codigoTime"));
+		
+		listaTimes.add(t);
+		
+		}
 		
 		rs.close();
 		ps.close();
 		
-		return t;
+		return listaTimes;
 	}
 }

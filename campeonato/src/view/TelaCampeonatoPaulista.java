@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
+import controller.ControllerBuscaJogos;
 import controller.ControllerGrupo;
 import controller.ControllerRodada;
 
@@ -25,15 +26,10 @@ import javax.swing.ScrollPaneConstants;
 
 public class TelaCampeonatoPaulista extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	/**
-	 * Launch the application.
-	 */
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -48,12 +44,9 @@ public class TelaCampeonatoPaulista extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public TelaCampeonatoPaulista() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 550, 480);
+		setBounds(100, 100, 768, 523);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -68,35 +61,31 @@ public class TelaCampeonatoPaulista extends JFrame {
 		pInicial.setLayout(null);
 		
 		JLabel lblPaulistao = new JLabel("Campeonato Paulista");
+		lblPaulistao.setBounds(231, 11, 262, 28);
 		lblPaulistao.setForeground(Color.BLUE);
 		lblPaulistao.setFont(new Font("Georgia", Font.BOLD, 24));
-		lblPaulistao.setBounds(128, 5, 262, 28);
 		pInicial.add(lblPaulistao);
 		
 		JLabel lblClicar = new JLabel("Clique no bot\u00E3o para dividir os times em 4 grupos");
+		lblClicar.setBounds(193, 77, 348, 19);
 		lblClicar.setForeground(Color.DARK_GRAY);
 		lblClicar.setFont(new Font("Century Schoolbook", Font.PLAIN, 15));
-		lblClicar.setBounds(82, 82, 348, 19);
 		pInicial.add(lblClicar);
 		
 		JButton btnGrupos = new JButton("GERAR GRUPOS");
+		btnGrupos.setBounds(280, 126, 170, 23);
 		btnGrupos.setForeground(Color.BLUE);
 		btnGrupos.setFont(new Font("Georgia", Font.PLAIN, 12));
-		btnGrupos.setBounds(179, 126, 170, 23);
 		pInicial.add(btnGrupos);
 		
 		JScrollPane spInicial = new JScrollPane();
+		spInicial.setBounds(115, 167, 504, 268);
 		spInicial.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		spInicial.setBounds(10, 160, 504, 206);
 		pInicial.add(spInicial);
 		
 		JTextArea taGrupos = new JTextArea();
 		spInicial.setViewportView(taGrupos);
-		
-		// Acao do botão gerar grupos
-		
-		ActionListener chamadaGrupos = new ControllerGrupo();
-		btnGrupos.addActionListener(chamadaGrupos);
+		taGrupos.setForeground(Color.black);
 		
 	// Tela que mostra os grupos formados
 		JPanel pGrupos = new JPanel();
@@ -104,17 +93,27 @@ public class TelaCampeonatoPaulista extends JFrame {
 		pGrupos.setLayout(null);
 		
 		JLabel lblGrupos = new JLabel("GRUPOS");
-		lblGrupos.setBounds(198, 11, 127, 28);
+		lblGrupos.setBounds(300, 11, 127, 28);
 		lblGrupos.setForeground(Color.BLUE);
 		lblGrupos.setFont(new Font("Georgia", Font.BOLD, 24));
 		pGrupos.add(lblGrupos);
 		
+		JScrollPane spTabGrupos = new JScrollPane();
+		spTabGrupos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		spTabGrupos.setBounds(58, 134, 611, 301);
+		pGrupos.add(spTabGrupos);
+		
 		JScrollPane spGrupos = new JScrollPane();
-		spGrupos.setBounds(10, 135, 514, 282);
-		pGrupos.add(spGrupos);
+		spTabGrupos.setViewportView(spGrupos);
 		
 		JTextArea tabGrupos = new JTextArea();
 		spGrupos.setViewportView(tabGrupos);
+		tabGrupos.setForeground(Color.black);
+		
+		// Acao do botão gerar grupos
+		
+		ActionListener chamadaGrupos = new ControllerGrupo(taGrupos, tabGrupos);
+		btnGrupos.addActionListener(chamadaGrupos);
 	
 	// Tela gerar rodadas e jogos	
 		JPanel pRodadas = new JPanel();
@@ -122,38 +121,36 @@ public class TelaCampeonatoPaulista extends JFrame {
 		pRodadas.setLayout(null);
 		
 		JLabel lblRodadas = new JLabel("Rodadas");
+		lblRodadas.setBounds(311, 11, 106, 28);
 		lblRodadas.setForeground(Color.BLUE);
 		lblRodadas.setFont(new Font("Georgia", Font.BOLD, 24));
-		lblRodadas.setBounds(201, 11, 106, 28);
 		pRodadas.add(lblRodadas);
 		
 		JLabel lblClicarRodadas = new JLabel("Clique no bot\u00E3o para gerar as rodadas dos jogos");
+		lblClicarRodadas.setBounds(204, 62, 308, 17);
 		lblClicarRodadas.setForeground(Color.DARK_GRAY);
 		lblClicarRodadas.setFont(new Font("Century Schoolbook", Font.PLAIN, 14));
-		lblClicarRodadas.setBounds(100, 61, 308, 17);
 		pRodadas.add(lblClicarRodadas);
 		
 		JButton btnRodadas = new JButton("GERAR RODADAS");
+		btnRodadas.setBounds(269, 113, 192, 23);
 		btnRodadas.setForeground(Color.BLUE);
 		btnRodadas.setFont(new Font("Georgia", Font.PLAIN, 12));
-		btnRodadas.setBounds(159, 102, 192, 23);
 		pRodadas.add(btnRodadas);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 171, 499, 221);
-		pRodadas.add(scrollPane);
-		
 		JScrollPane spRodadas = new JScrollPane();
-		scrollPane.setViewportView(spRodadas);
+		spRodadas.setBounds(24, 157, 703, 278);
+		pRodadas.add(spRodadas);
+		spRodadas.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		spRodadas.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		JTextArea taRodadas = new JTextArea();
 		spRodadas.setViewportView(taRodadas);
-		taRodadas.setForeground(Color.WHITE);
+		taRodadas.setForeground(Color.black);
 		
 		// Acao do botão gerar rodadas
 		
-		ActionListener chamadaRodadas = new ControllerRodada();
+		ActionListener chamadaRodadas = new ControllerRodada(taRodadas);
 		btnRodadas.addActionListener(chamadaRodadas);
 		
 	// Tela que busca as rodadas pela data que o usuário digitou
@@ -162,13 +159,13 @@ public class TelaCampeonatoPaulista extends JFrame {
 		pBuscaRodadas.setLayout(null);
 		
 		JLabel lblBuscar = new JLabel("BUSCAR  RODADA");
-		lblBuscar.setBounds(156, 11, 214, 43);
+		lblBuscar.setBounds(256, 11, 214, 43);
 		lblBuscar.setForeground(Color.BLUE);
 		lblBuscar.setFont(new Font("Georgia", Font.BOLD, 20));
 		pBuscaRodadas.add(lblBuscar);
 		
 		JLabel lblDigite = new JLabel("Digite uma data");
-		lblDigite.setBounds(104, 92, 127, 23);
+		lblDigite.setBounds(243, 92, 127, 23);
 		lblDigite.setForeground(Color.DARK_GRAY);
 		lblDigite.setFont(new Font("Century Schoolbook", Font.PLAIN, 14));
 		pBuscaRodadas.add(lblDigite);
@@ -186,15 +183,20 @@ public class TelaCampeonatoPaulista extends JFrame {
 	    }
 		
 		JFormattedTextField tfData = new JFormattedTextField(mascaraData);
-		tfData.setBounds(279, 94, 102, 23);
+		tfData.setBounds(442, 94, 102, 23);
 		pBuscaRodadas.add(tfData);
 		
 		JScrollPane spBuscaRodadas = new JScrollPane();
-		spBuscaRodadas.setBounds(10, 173, 487, 219);
+		spBuscaRodadas.setBounds(49, 162, 653, 254);
 		spBuscaRodadas.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		pBuscaRodadas.add(spBuscaRodadas);
 		
 		JTextArea taBusca = new JTextArea();
 		spBuscaRodadas.setViewportView(taBusca);
+		taBusca.setForeground(Color.black);
+		
+		// acao de buscar jogos
+		ActionListener chamadaJogos = new ControllerBuscaJogos(tfData, taBusca);
+		tfData.addActionListener(chamadaJogos);
 	}
 }
