@@ -368,7 +368,28 @@ SELECT t.codigoTime, j.data FROM times t, jogos j
 WHERE t.codigoTime = j.codigoTimeA AND data = '2019-01-20' 
 OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
 
-
+-- cria função retorna rodadas
+CREATE FUNCTION fn_RetornaRodadas()
+RETURNS @table TABLE (
+Mandante	VARCHAR(100),
+Visitante	VARCHAR(100),
+Estadio		VARCHAR(100),
+Cidade		VARCHAR(100),
+Dataj		date
+)
+AS
+BEGIN
+	INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
+		SELECT   time1.nomeTime + REPLICATE(' ', 16 - DATALENGTH(time1.nomeTime )) AS 'Mandante', time2.nomeTime AS 'Visitante', time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', data AS 'Dataj'
+ 		FROM times AS time1 
+ 		INNER JOIN jogos 
+ 		ON time1.codigoTime = jogos.codigoTimeA
+ 		INNER JOIN times AS time2 
+ 		ON time2.codigoTime = jogos.codigoTimeB 
+ 		ORDER BY dataj
+ 		
+	RETURN
+END
 
 -- PROCEDURE QUE BUSCA TODOS OS JOGOS DE UMA DATA
 
