@@ -1,4 +1,6 @@
-/view/
+/.classpath
+/.project
 /controller/
-/persistence/
 /model/
+/persistence/
+/view/

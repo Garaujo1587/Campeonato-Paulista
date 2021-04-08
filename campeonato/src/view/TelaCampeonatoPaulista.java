@@ -111,7 +111,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		spGrupos.setViewportView(tabGrupos);
 		tabGrupos.setForeground(Color.black);
 		
-		// Acao do botão gerar grupos
+		// Acao do botï¿½o gerar grupos
 		
 		ActionListener chamadaGrupos = new ControllerGrupo(taGrupos, tabGrupos);
 		btnGrupos.addActionListener(chamadaGrupos);
@@ -149,12 +149,12 @@ public class TelaCampeonatoPaulista extends JFrame {
 		spRodadas.setViewportView(taRodadas);
 		taRodadas.setForeground(Color.black);
 		
-		// Acao do botão gerar rodadas
+		// Acao do botï¿½o gerar rodadas
 		
 		ActionListener chamadaRodadas = new ControllerRodada(taRodadas);
 		btnRodadas.addActionListener(chamadaRodadas);
 		
-	// Tela que busca as rodadas pela data que o usuário digitou
+	// Tela que busca as rodadas pela data que o usuï¿½rio digitou
 		JPanel pBuscaRodadas = new JPanel();
 		tabbedPane.addTab("Buscar Rodadas", null, pBuscaRodadas, null);
 		pBuscaRodadas.setLayout(null);
@@ -171,7 +171,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		lblDigite.setFont(new Font("Century Schoolbook", Font.PLAIN, 14));
 		pBuscaRodadas.add(lblDigite);
 		
-		//Define as máscaras
+		//Define as mï¿½scaras
 	    MaskFormatter mascaraData = null;
 
 	    try{
@@ -179,7 +179,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 	           mascaraData.setPlaceholderCharacter('_');
 	    }
 	    catch(ParseException excp) {
-	           System.err.println("Erro na formatação: " + excp.getMessage());
+	           System.err.println("Erro na formataï¿½ï¿½o: " + excp.getMessage());
 	           System.exit(-1);
 	    }
 		

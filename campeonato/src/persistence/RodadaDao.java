@@ -33,15 +33,9 @@ private Connection c;
 	
 	public List<Jogos> mostraRodadas() throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
-		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', data AS 'Data' ");
-		sql.append("FROM times AS time1 ");
-		sql.append("INNER JOIN jogos ");
-		sql.append("ON time1.codigoTime = jogos.codigoTimeA ");
-		sql.append("INNER JOIN times AS time2 ");
-		sql.append("ON time2.codigoTime = jogos.codigoTimeB ");
-		sql.append("ORDER BY data ");
-		PreparedStatement ps = c.prepareStatement(sql.toString());
+		String sql;
+		sql = "SELECT Mandante, Visitante, Estadio, Cidade, Dataj From fn_RetornaRodadas() ORDER BY dataj";
+		PreparedStatement ps = c.prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
 		
 		while (rs.next()) {
@@ -51,7 +45,7 @@ private Connection c;
 		j.setNomeTimeB(rs.getString("Visitante"));
 		j.setEstadio(rs.getString("Estadio"));
 		j.setCidade(rs.getString("Cidade"));
-		j.setData(rs.getDate("Data"));
+		j.setData(rs.getDate("Dataj"));
 		
 		listaJogos.add(j);
 		

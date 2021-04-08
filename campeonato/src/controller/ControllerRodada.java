@@ -51,7 +51,7 @@ public class ControllerRodada implements ActionListener {
 		StringBuffer sb = new StringBuffer("Mandante\t\tVisitante\t\tEstadio\t\tCidade\t\tData\n\n");
 		
 		for (Jogos j: listaJogos) {
-			sb.append(j.getNomeTimeA()+"\t\t"+j.getNomeTimeB()+"\t\t"+j.getEstadio()+"\t\t"+j.getCidade()+"\t\t"+ j.getData()+"\n");
+			sb.append(j.getNomeTimeA() +j.getNomeTimeB()+j.getEstadio()+j.getCidade()+ j.getData()+"\n");
 		}
 		
 		taRodadas.setText(sb.toString());
