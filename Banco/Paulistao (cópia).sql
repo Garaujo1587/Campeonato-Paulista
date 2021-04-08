@@ -380,7 +380,7 @@ Dataj		date
 AS
 BEGIN
 	INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
-		SELECT   time1.nomeTime + REPLICATE(' ', 16 - DATALENGTH(time1.nomeTime )) AS 'Mandante', time2.nomeTime AS 'Visitante', time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', data AS 'Dataj'
+		SELECT   time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', data AS 'Dataj'
  		FROM times AS time1 
  		INNER JOIN jogos 
  		ON time1.codigoTime = jogos.codigoTimeA
@@ -390,6 +390,7 @@ BEGIN
  		
 	RETURN
 END
+
 
 -- PROCEDURE QUE BUSCA TODOS OS JOGOS DE UMA DATA
 

@@ -6,18 +6,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 import model.Jogos;
+import model.ModeloTabelaJogos;
 import persistence.RodadaDao;
-
 
 public class ControllerRodada implements ActionListener {
 
-	private JTextArea taRodadas;
+	private JTable table;
+
 	
-	public ControllerRodada(JTextArea taRodadas) {
-		this.taRodadas = taRodadas;
+
+	public ControllerRodada(JTable table) {
+		this.table = table;
 	}
 
 	@Override
@@ -30,32 +33,29 @@ public class ControllerRodada implements ActionListener {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void geraRodadas() throws ClassNotFoundException, SQLException {
-		
+
 		RodadaDao rDao = new RodadaDao();
 		String saida = rDao.procGeraRodadas();
 		JOptionPane.showMessageDialog(null, saida, "MENSAGEM", JOptionPane.INFORMATION_MESSAGE);
-		
+
 	}
-	
+
 	private void mostraRodadas() throws ClassNotFoundException, SQLException {
-		
+
 		RodadaDao rDao = new RodadaDao();
 		List<Jogos> listaJogos = rDao.mostraRodadas();
 		
-		taRodadas.setText("");
+		ModeloTabelaJogos mJ = new ModeloTabelaJogos(listaJogos);
+		table.setModel(mJ);
+
 		
-		StringBuffer sb = new StringBuffer("Mandante\t\tVisitante\t\tEstadio\t\tCidade\t\tData\n\n");
-		
-		for (Jogos j: listaJogos) {
-			sb.append(j.getNomeTimeA() +j.getNomeTimeB()+j.getEstadio()+j.getCidade()+ j.getData()+"\n");
-		}
-		
-		taRodadas.setText(sb.toString());
-	}
 	
+
+	
+	}
 
 }
