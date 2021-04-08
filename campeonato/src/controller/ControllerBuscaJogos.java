@@ -15,9 +15,10 @@ public class ControllerBuscaJogos implements ActionListener {
 
 	private JFormattedTextField tfData;
 	private JTextArea taBusca;
+	private String data;
 
-	public ControllerBuscaJogos(JFormattedTextField tfData, JTextArea taBusca) {
-		this.tfData = tfData;
+	public ControllerBuscaJogos(String data, JTextArea taBusca) {
+		this.data = data;
 		this.taBusca = taBusca;
 	}
 
@@ -37,8 +38,7 @@ public class ControllerBuscaJogos implements ActionListener {
 
 		RodadaDao rDao = new RodadaDao();
 		Jogos j = new Jogos();
-		List<Jogos> listaJogos = rDao.buscaRodada(j);
-		tfData.setText(String.valueOf(j.getData()));
+		List<Jogos> listaJogos = rDao.buscaRodada(data);
 		
 		StringBuffer sb = new StringBuffer("Mandante\t\tVisitante\t\tData\n\n");
 

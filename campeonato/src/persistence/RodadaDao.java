@@ -63,7 +63,7 @@ private Connection c;
 		return listaJogos;
 	}
 	
-	public List<Jogos> buscaRodada(Jogos j) throws SQLException {
+	public List<Jogos> buscaRodada(String data) throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', data AS 'Data' ");
@@ -74,11 +74,13 @@ private Connection c;
 		sql.append("ON time2.codigoTime = jogos.codigoTimeB ");
 		sql.append("WHERE data = ? ");
 		PreparedStatement ps = c.prepareStatement(sql.toString());
-		ps.setDate(1, j.getData());
+		ps.setString(1, data);
 		ResultSet rs = ps.executeQuery();
 		
 		while (rs.next()) {
 		
+		Jogos j = new Jogos();	
+			
 		j.setNomeTimeA(rs.getString("Mandante"));
 		j.setNomeTimeB(rs.getString("Visitante"));
 		j.setData(rs.getDate("Data"));

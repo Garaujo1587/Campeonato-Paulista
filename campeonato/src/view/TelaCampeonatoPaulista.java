@@ -28,6 +28,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private String data;
 
 	
 	public static void main(String[] args) {
@@ -196,7 +197,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		taBusca.setForeground(Color.black);
 		
 		// acao de buscar jogos
-		ActionListener chamadaJogos = new ControllerBuscaJogos(tfData, taBusca);
+		ActionListener chamadaJogos = new ControllerBuscaJogos(tfData.getText(), taBusca);
 		tfData.addActionListener(chamadaJogos);
 	}
 }

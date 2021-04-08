@@ -372,7 +372,7 @@ OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
 
 -- PROCEDURE QUE BUSCA TODOS OS JOGOS DE UMA DATA
 
-CREATE PROCEDURE sp_busca_jogo (@dt DATETIME, @saida VARCHAR(MAX) OUTPUT) 
+CREATE PROCEDURE sp_busca_jogo (@dt VARCHAR(10), @saida VARCHAR(MAX) OUTPUT) 
 AS
 
 SET @dt = Format(CONVERT(date, @dt),'MM-dd-yyyy')
