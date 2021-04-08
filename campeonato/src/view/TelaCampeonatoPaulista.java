@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.text.ParseException;
 
 import javax.swing.JButton;
@@ -16,23 +18,23 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
-import controller.ControllerBuscaJogos;
 import controller.ControllerGrupo;
 import controller.ControllerRodada;
-import model.ModeloTabelaJogos;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTable;
-import java.awt.Scrollbar;
+import java.awt.Button;
 
 public class TelaCampeonatoPaulista extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private String data;
 	private JTable table;
+	private ControllerGrupo cG = new ControllerGrupo();
+	private ControllerRodada cR = new ControllerRodada();
+	private JTable tableBusca;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -81,6 +83,8 @@ public class TelaCampeonatoPaulista extends JFrame {
 		btnGrupos.setForeground(Color.BLUE);
 		btnGrupos.setFont(new Font("Georgia", Font.PLAIN, 12));
 		pInicial.add(btnGrupos);
+		
+		
 
 		JScrollPane spInicial = new JScrollPane();
 		spInicial.setBounds(115, 167, 504, 268);
@@ -97,7 +101,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		pGrupos.setLayout(null);
 
 		JLabel lblGrupos = new JLabel("GRUPOS");
-		lblGrupos.setBounds(300, 11, 127, 28);
+		lblGrupos.setBounds(271, 24, 127, 28);
 		lblGrupos.setForeground(Color.BLUE);
 		lblGrupos.setFont(new Font("Georgia", Font.BOLD, 24));
 		pGrupos.add(lblGrupos);
@@ -116,8 +120,42 @@ public class TelaCampeonatoPaulista extends JFrame {
 
 		// Acao do bot�o gerar grupos
 
-		ActionListener chamadaGrupos = new ControllerGrupo(taGrupos, tabGrupos);
-		btnGrupos.addActionListener(chamadaGrupos);
+		
+		Button btnBuscaGrupo = new Button("Mostrar");
+		btnBuscaGrupo.setBounds(234, 69, 192, 23);
+		btnBuscaGrupo.setForeground(Color.BLUE);
+		btnBuscaGrupo.setFont(new Font("Georgia", Font.PLAIN, 12));
+		pGrupos.add(btnBuscaGrupo);
+		
+		btnBuscaGrupo.addActionListener(
+				  new ActionListener()
+				  {
+				    public void actionPerformed(ActionEvent e)
+				    {
+				      try {
+						cG.mostraGrupos(tabGrupos);
+					} catch (ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				    }
+				  }
+				);
+		
+		btnGrupos.addActionListener(
+				  new ActionListener()
+				  {
+				    public void actionPerformed(ActionEvent e)
+				    {
+				      try {
+						cG.geraGrupos(taGrupos);
+					} catch (ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				    }
+				  }
+				);
 
 		// Tela gerar rodadas e jogos
 		JPanel pRodadas = new JPanel();
@@ -153,8 +191,21 @@ public class TelaCampeonatoPaulista extends JFrame {
 	
 		
 
-		ActionListener chamadaRodadas = new ControllerRodada(table);
-		btnRodadas.addActionListener(chamadaRodadas);
+		
+		btnRodadas.addActionListener(
+				  new ActionListener()
+				  {
+				    public void actionPerformed(ActionEvent e)
+				    {
+				      try {
+						cR.geraRodadas(table);
+					} catch (ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				    }
+				  }
+				);
 
 		// Tela que busca as rodadas pela data que o usu�rio digitou
 		JPanel pBuscaRodadas = new JPanel();
@@ -168,7 +219,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		pBuscaRodadas.add(lblBuscar);
 
 		JLabel lblDigite = new JLabel("Digite uma data");
-		lblDigite.setBounds(243, 92, 127, 23);
+		lblDigite.setBounds(87, 94, 127, 23);
 		lblDigite.setForeground(Color.DARK_GRAY);
 		lblDigite.setFont(new Font("Century Schoolbook", Font.PLAIN, 14));
 		pBuscaRodadas.add(lblDigite);
@@ -185,20 +236,40 @@ public class TelaCampeonatoPaulista extends JFrame {
 		}
 
 		JFormattedTextField tfData = new JFormattedTextField(mascaraData);
-		tfData.setBounds(442, 94, 102, 23);
+		tfData.setBounds(232, 94, 102, 23);
 		pBuscaRodadas.add(tfData);
-
-		JScrollPane spBuscaRodadas = new JScrollPane();
-		spBuscaRodadas.setBounds(49, 162, 653, 254);
-		spBuscaRodadas.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		pBuscaRodadas.add(spBuscaRodadas);
-
-		JTextArea taBusca = new JTextArea();
-		spBuscaRodadas.setViewportView(taBusca);
-		taBusca.setForeground(Color.black);
-
-		// acao de buscar jogos
-		ActionListener chamadaJogos = new ControllerBuscaJogos(tfData.getText(), taBusca);
-		tfData.addActionListener(chamadaJogos);
+		
+		Button btnBuscaJogo = new Button("Buscar");
+		btnBuscaJogo.setBounds(399, 94, 86, 23);
+		btnBuscaJogo.setForeground(Color.BLUE);
+		btnBuscaJogo.setFont(new Font("Georgia", Font.PLAIN, 12));
+		pBuscaRodadas.add(btnBuscaJogo);
+		
+	
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(12, 128, 705, 302);
+		pBuscaRodadas.add(scrollPane_1);
+		
+		tableBusca = new JTable();
+		tableBusca.setToolTipText("");
+		tableBusca.setForeground(Color.BLACK);
+		scrollPane_1.setColumnHeaderView(tableBusca);
+		
+		btnBuscaJogo.addActionListener(
+				  new ActionListener()
+				  {
+				    public void actionPerformed(ActionEvent e)
+				    {
+				      try {
+						cR.buscaRodadas(tableBusca, tfData.getText());
+					} catch (ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				    }
+				  }
+				);
+		
+		
 	}
 }

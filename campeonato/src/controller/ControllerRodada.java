@@ -3,6 +3,7 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -13,43 +14,46 @@ import model.Jogos;
 import model.ModeloTabelaJogos;
 import persistence.RodadaDao;
 
-public class ControllerRodada implements ActionListener {
+public class ControllerRodada {
 
-	private JTable table;
+
 
 	
 
-	public ControllerRodada(JTable table) {
-		this.table = table;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		try {
-			geraRodadas();
-			mostraRodadas();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	private void geraRodadas() throws ClassNotFoundException, SQLException {
+	public void geraRodadas(JTable table) throws ClassNotFoundException, SQLException {
 
 		RodadaDao rDao = new RodadaDao();
+
 		String saida = rDao.procGeraRodadas();
-		JOptionPane.showMessageDialog(null, saida, "MENSAGEM", JOptionPane.INFORMATION_MESSAGE);
-
-	}
-
-	private void mostraRodadas() throws ClassNotFoundException, SQLException {
-
-		RodadaDao rDao = new RodadaDao();
+		
 		List<Jogos> listaJogos = rDao.mostraRodadas();
 		
-		ModeloTabelaJogos mJ = new ModeloTabelaJogos(listaJogos);
+		JOptionPane.showMessageDialog(null, saida, "MENSAGEM", JOptionPane.INFORMATION_MESSAGE);
+		
+		
+		
+		mostraRodadas(table, listaJogos);
+		
+
+	}
+	
+	public void buscaRodadas(JTable table, String data) throws ClassNotFoundException, SQLException {
+
+		RodadaDao rDao = new RodadaDao();
+		List<Jogos> rodadas = new ArrayList<Jogos>();
+		rodadas = rDao.buscaRodada(data);
+		
+		mostraRodadas(table, rodadas);
+		
+
+	}
+	
+	
+
+	private void mostraRodadas(JTable table, List<Jogos> jogos) throws ClassNotFoundException, SQLException {
+
+		
+		ModeloTabelaJogos mJ = new ModeloTabelaJogos(jogos);
 		table.setModel(mJ);
 
 		
