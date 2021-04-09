@@ -59,15 +59,9 @@ private Connection c;
 	
 	public List<Jogos> buscaRodada(String data) throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
-		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', data AS 'Data' ");
-		sql.append("FROM times AS time1 ");
-		sql.append("INNER JOIN jogos ");
-		sql.append("ON time1.codigoTime = jogos.codigoTimeA ");
-		sql.append("INNER JOIN times AS time2 ");
-		sql.append("ON time2.codigoTime = jogos.codigoTimeB ");
-		sql.append("WHERE data = ? ");
-		PreparedStatement ps = c.prepareStatement(sql.toString());
+		String sql;
+		sql = "SELECT Mandante, Visitante, Dataj FROM fn_BuscaJogos(?) ";
+		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, data);
 		ResultSet rs = ps.executeQuery();
 		
@@ -77,7 +71,7 @@ private Connection c;
 			
 		j.setNomeTimeA(rs.getString("Mandante"));
 		j.setNomeTimeB(rs.getString("Visitante"));
-		j.setData(rs.getDate("Data"));
+		j.setData(rs.getDate("Dataj"));
 		
 		listaJogos.add(j);
 		

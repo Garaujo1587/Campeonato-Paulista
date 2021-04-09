@@ -371,44 +371,60 @@ OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
 -- cria função retorna rodadas
 CREATE FUNCTION fn_RetornaRodadas()
 RETURNS @table TABLE (
+Mandante    VARCHAR(100),
+Visitante    VARCHAR(100),
+Estadio        VARCHAR(100),
+Cidade        VARCHAR(100),
+Dataj        date
+)
+AS
+BEGIN
+    INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
+        SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
+		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', data AS 'Dataj' 
+		FROM times AS time1
+		INNER JOIN jogos
+		ON time1.codigoTime = jogos.codigoTimeA
+		INNER JOIN times AS time2
+		ON time2.codigoTime = jogos.codigoTimeB
+		ORDER BY data
+    RETURN
+END
+
+-- chamando a function que retorna as rodadas
+SELECT * FROM fn_RetornaRodadas()
+
+-- FUNCTION QUE BUSCA TODOS OS JOGOS DE UMA DATA
+
+CREATE FUNCTION fn_BuscaJogos(@dat VARCHAR(10))
+RETURNS @table TABLE (
 Mandante	VARCHAR(100),
 Visitante	VARCHAR(100),
-Estadio		VARCHAR(100),
-Cidade		VARCHAR(100),
 Dataj		date
 )
 AS
 BEGIN
-	INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
-		SELECT   time1.nomeTime + REPLICATE(' ', 16 - DATALENGTH(time1.nomeTime )) AS 'Mandante', time2.nomeTime AS 'Visitante', time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', data AS 'Dataj'
- 		FROM times AS time1 
- 		INNER JOIN jogos 
- 		ON time1.codigoTime = jogos.codigoTimeA
- 		INNER JOIN times AS time2 
- 		ON time2.codigoTime = jogos.codigoTimeB 
- 		ORDER BY dataj
+	SET @dat = CONVERT(DATE, @dat, 103)
+	INSERT INTO @table (Mandante, Visitante, Dataj)
+		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
+		data AS 'Dataj' 
+		FROM times AS time1
+		INNER JOIN jogos
+		ON time1.codigoTime = jogos.codigoTimeA
+		INNER JOIN times AS time2
+		ON time2.codigoTime = jogos.codigoTimeB
+		WHERE data = @dat
  		
 	RETURN
 END
 
--- PROCEDURE QUE BUSCA TODOS OS JOGOS DE UMA DATA
+-- chamando a function que busca jogos
+SELECT Mandante, Visitante, Dataj FROM fn_BuscaJogos('20/01/2019')
 
-CREATE PROCEDURE sp_busca_jogo (@dt VARCHAR(10), @saida VARCHAR(MAX) OUTPUT) 
-AS
-
-SET @dt = Format(CONVERT(date, @dt),'MM-dd-yyyy')
-
-SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', data AS 'Data' 
-FROM times AS time1
-INNER JOIN jogos
-ON time1.codigoTime = jogos.codigoTimeA
-INNER JOIN times AS time2
-ON time2.codigoTime = jogos.codigoTimeB
-WHERE data = @dt
-
-SET @saida = 'Busca dos jogos do dia ' + @dt + ' feita'
-
--- chamando a procedure que busca jogos
-DECLARE @out VARCHAR(MAX)
-EXEC sp_busca_jogo '2019-01-20', @out OUTPUT
-PRINT @out
+SELECT *
+  FROM jogos
+ WHERE codigoTimeA = 1 AND codigoTimeB = 5
+   AND CONVERT(DATE, data, 103) BETWEEN CONVERT(DATE, '15/05/2017', 103) AND CONVERT(DATE, '31/05/2017', 103);
+DECLARE @d AS VARCHAR(10)
+SET @d = (SELECT CONVERT(VARCHAR(10), data, 103) from jogos j where codigoTimeA = 1 AND codigoTimeB = 5)
+PRINT CONVERT(DATE, @d, 103)
