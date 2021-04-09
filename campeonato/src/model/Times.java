@@ -39,7 +39,7 @@ public class Times {
 	public void setGrupo(String grupo) {
 		this.grupo = grupo;
 	}
-	@Override
+
 	public String toString() {
 		return "Times [codigoTime=" + codigoTime + ", nomeTime=" + nomeTime + ", cidade=" + cidade + ", estadio="
 				+ estadio + ", grupo=" + grupo + "]";

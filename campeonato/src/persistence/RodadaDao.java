@@ -60,7 +60,7 @@ private Connection c;
 	public List<Jogos> buscaRodada(String data) throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
 		String sql;
-		sql = "SELECT Mandante, Visitante, Dataj FROM fn_BuscaJogos(?) ";
+		sql = "SELECT Mandante, Visitante, Estadio,Cidade, Dataj FROM fn_BuscaJogos(?) ";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, data);
 		ResultSet rs = ps.executeQuery();
@@ -71,6 +71,8 @@ private Connection c;
 			
 		j.setNomeTimeA(rs.getString("Mandante"));
 		j.setNomeTimeB(rs.getString("Visitante"));
+		j.setEstadio(rs.getString("Estadio"));
+		j.setCidade(rs.getString("Cidade"));
 		j.setData(rs.getString("Dataj"));
 		
 		listaJogos.add(j);
