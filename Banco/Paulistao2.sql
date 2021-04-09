@@ -386,6 +386,8 @@ CREATE FUNCTION fn_BuscaJogos(@dat VARCHAR(10))
 RETURNS @table TABLE (
 Mandante	VARCHAR(100),
 Visitante	VARCHAR(100),
+Estadio        VARCHAR(100),
+Cidade        VARCHAR(100),
 Dataj		VARCHAR(10)
 )
 AS
@@ -395,15 +397,21 @@ BEGIN
 	
 	IF NOT EXISTS (SELECT * FROM jogos WHERE data = @dat)
 	BEGIN
-		INSERT INTO @table (Mandante, Visitante, Dataj)
-			SELECT 'Jogo não encontrado' AS 'Mandante',
-			'Digite uma data válida' AS 'Visitante',
-			'-/-/-' AS 'Dataj'
+		INSERT INTO @table (Mandante, Dataj)
+			SELECT '-1' AS 'Mandante',
+			CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
+			FROM times AS time1
+			INNER JOIN jogos
+			ON time1.codigoTime = jogos.codigoTimeA
+			INNER JOIN times AS time2
+			ON time2.codigoTime = jogos.codigoTimeB
+			GROUP BY data
 	END
 	ELSE
 	BEGIN
-	INSERT INTO @table (Mandante, Visitante, Dataj)
+	INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
 		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
+		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade',
 		CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
 		FROM times AS time1
 		INNER JOIN jogos
@@ -417,7 +425,7 @@ BEGIN
 END
 
 -- chamando a function que busca jogos
-SELECT Mandante, Visitante, Dataj FROM fn_BuscaJogos('20/01/2019')
+SELECT Mandante, Visitante, Cidade, Estadio, Dataj FROM fn_BuscaJogos('29/01/2019')
 
 
 -- TESTANDO SE NADA DEU ERRADO
