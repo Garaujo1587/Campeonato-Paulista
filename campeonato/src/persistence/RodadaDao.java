@@ -45,7 +45,7 @@ private Connection c;
 		j.setNomeTimeB(rs.getString("Visitante"));
 		j.setEstadio(rs.getString("Estadio"));
 		j.setCidade(rs.getString("Cidade"));
-		j.setData(rs.getDate("Dataj"));
+		j.setData(rs.getString("Dataj"));
 		
 		listaJogos.add(j);
 		
@@ -71,7 +71,7 @@ private Connection c;
 			
 		j.setNomeTimeA(rs.getString("Mandante"));
 		j.setNomeTimeB(rs.getString("Visitante"));
-		j.setData(rs.getDate("Dataj"));
+		j.setData(rs.getString("Dataj"));
 		
 		listaJogos.add(j);
 		

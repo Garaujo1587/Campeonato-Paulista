@@ -25,7 +25,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTable;
-import java.awt.Button;
 
 public class TelaCampeonatoPaulista extends JFrame {
 
@@ -121,7 +120,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		// Acao do bot�o gerar grupos
 
 		
-		Button btnBuscaGrupo = new Button("Mostrar");
+		JButton btnBuscaGrupo = new JButton("MOSTRAR GRUPOS");
 		btnBuscaGrupo.setBounds(234, 69, 192, 23);
 		btnBuscaGrupo.setForeground(Color.BLUE);
 		btnBuscaGrupo.setFont(new Font("Georgia", Font.PLAIN, 12));
@@ -239,7 +238,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		tfData.setBounds(232, 94, 102, 23);
 		pBuscaRodadas.add(tfData);
 		
-		Button btnBuscaJogo = new Button("Buscar");
+		JButton btnBuscaJogo = new JButton("BUSCAR");
 		btnBuscaJogo.setBounds(399, 94, 86, 23);
 		btnBuscaJogo.setForeground(Color.BLUE);
 		btnBuscaJogo.setFont(new Font("Georgia", Font.PLAIN, 12));

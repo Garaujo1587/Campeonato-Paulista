@@ -361,13 +361,13 @@ Mandante    VARCHAR(100),
 Visitante    VARCHAR(100),
 Estadio        VARCHAR(100),
 Cidade        VARCHAR(100),
-Dataj        date
+Dataj        VARCHAR(10)
 )
 AS
 BEGIN
     INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
         SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
-		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', data AS 'Dataj' 
+		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
 		FROM times AS time1
 		INNER JOIN jogos
 		ON time1.codigoTime = jogos.codigoTimeA
@@ -386,21 +386,33 @@ CREATE FUNCTION fn_BuscaJogos(@dat VARCHAR(10))
 RETURNS @table TABLE (
 Mandante	VARCHAR(100),
 Visitante	VARCHAR(100),
-Dataj		date
+Dataj		VARCHAR(10)
 )
 AS
 BEGIN
+
 	SET @dat = CONVERT(DATE, @dat, 103)
+	
+	IF NOT EXISTS (SELECT * FROM jogos WHERE data = @dat)
+	BEGIN
+		INSERT INTO @table (Mandante, Visitante, Dataj)
+			SELECT 'Jogo não encontrado' AS 'Mandante',
+			'Digite uma data válida' AS 'Visitante',
+			'-/-/-' AS 'Dataj'
+	END
+	ELSE
+	BEGIN
 	INSERT INTO @table (Mandante, Visitante, Dataj)
 		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
-		data AS 'Dataj' 
+		CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
 		FROM times AS time1
 		INNER JOIN jogos
 		ON time1.codigoTime = jogos.codigoTimeA
 		INNER JOIN times AS time2
 		ON time2.codigoTime = jogos.codigoTimeB
 		WHERE data = @dat
- 	
+	END
+
 	RETURN
 END
 

@@ -1,14 +1,12 @@
 package model;
 
-import java.sql.Date;
-
 public class Jogos {
 	
 	private String nomeTimeA;
 	private String nomeTimeB;
 	private String estadio;
 	private String cidade;
-	private Date data;
+	private String data;
 	
 	public String getNomeTimeA() {
 		return nomeTimeA;
@@ -34,11 +32,11 @@ public class Jogos {
 	public void setCidade(String cidade) {
 		this.cidade = cidade;
 	}
-	public Date getData() {
+	public String getData() {
 		return data;
 	}
-	public void setData(Date data) {
-		this.data = data;
+	public void setData(String date) {
+		this.data = date;
 	}
 	@Override
 	public String toString() {
