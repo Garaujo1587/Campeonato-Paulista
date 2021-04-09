@@ -414,7 +414,7 @@ BEGIN
 		INNER JOIN times AS time2
 		ON time2.codigoTime = jogos.codigoTimeB
 		WHERE data = @dat
- 		
+ 	
 	RETURN
 END
 

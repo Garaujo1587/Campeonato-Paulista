@@ -11,44 +11,29 @@ import javax.swing.JTextArea;
 import model.Times;
 import persistence.GrupoDao;
 
-public class ControllerGrupo implements ActionListener {
+public class ControllerGrupo{
 
-	private JTextArea taGrupo;
-	private JTextArea tabGrupo;
 
-	public ControllerGrupo(JTextArea taGrupos, JTextArea tabGrupo) {
-		this.taGrupo = taGrupos;
-		this.tabGrupo = tabGrupo;
-	}
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		try {
-			geraGrupos();
-			mostraGrupos();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	
 
-	}
-
-	private void geraGrupos() throws ClassNotFoundException, SQLException {
+	public void geraGrupos(JTextArea taGrupo) throws ClassNotFoundException, SQLException {
 
 		GrupoDao gDao = new GrupoDao();
 		String saida = gDao.procGeraGrupos();
 		JOptionPane.showMessageDialog(null, saida, "MENSAGEM", JOptionPane.INFORMATION_MESSAGE);
+		
+		mostraGrupos(taGrupo);
 
 	}
 
-	private void mostraGrupos() throws ClassNotFoundException, SQLException {
+	public void mostraGrupos(JTextArea taGrupo) throws ClassNotFoundException, SQLException {
 
 		GrupoDao gDao = new GrupoDao();
 		List<Times> listaTimes = gDao.mostraGrupos();
 
 		taGrupo.setText("");
-		tabGrupo.setText("");
+	
 
 		StringBuffer sb = new StringBuffer("Grupo\t\tTime\n\n");
 
@@ -64,6 +49,6 @@ public class ControllerGrupo implements ActionListener {
 		}
 
 		taGrupo.setText(sb.toString());
-		tabGrupo.setText(sb.toString());
+	
 	}
 }
