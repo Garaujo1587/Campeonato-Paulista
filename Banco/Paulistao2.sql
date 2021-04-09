@@ -163,16 +163,13 @@ AS
 
 SET @saida = 'Grupos gerados com sucesso'
 
--- chamando a procedure para formar os grupos
+-- TESTANDO A PROCEDURE DE GERAR GRUPOS
+
 DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_grupos @out OUTPUT
 PRINT @out
 
-GO
-
 SELECT * FROM times
-
-GO
 
 
 -- PROCEDURE QUE GERA OS JOGOS E AS RODADAS
@@ -335,9 +332,8 @@ AS
 
 SET @saida = 'Rodadas geradas com sucesso'
 
+-- TESTANDO A PROCEDURE QUE GERA OS JOGOS/RODADAS
 
-
--- chamando a procedure para gerar os jogos e as rodadas
 DECLARE @out VARCHAR(MAX)
 EXEC sp_criando_rodadas @out OUTPUT
 PRINT '@out'
@@ -356,19 +352,9 @@ INNER JOIN times AS time2
 ON time2.codigoTime = jogos.codigoTimeB
 ORDER BY data
 
-SELECT COUNT(*), t.codigoTime, j.data 
-FROM jogos j INNER JOIN times t
-ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB 
-WHERE data = '2019-01-20' 
-GROUP BY t.codigoTime, j.data
-HAVING COUNT(*)>1
 
--- select que mostra como deve ficar, um time joga apenas uma rodada(data)
-SELECT t.codigoTime, j.data FROM times t, jogos j
-WHERE t.codigoTime = j.codigoTimeA AND data = '2019-01-20' 
-OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
+-- FUNCTION QUE MOSTRA AS RODADAS
 
--- cria função retorna rodadas
 CREATE FUNCTION fn_RetornaRodadas()
 RETURNS @table TABLE (
 Mandante    VARCHAR(100),
@@ -421,10 +407,23 @@ END
 -- chamando a function que busca jogos
 SELECT Mandante, Visitante, Dataj FROM fn_BuscaJogos('20/01/2019')
 
-SELECT *
-  FROM jogos
- WHERE codigoTimeA = 1 AND codigoTimeB = 5
-   AND CONVERT(DATE, data, 103) BETWEEN CONVERT(DATE, '15/05/2017', 103) AND CONVERT(DATE, '31/05/2017', 103);
+
+-- TESTANDO SE NADA DEU ERRADO
+
+-- convertendo varchar pra date e date pra varchar
 DECLARE @d AS VARCHAR(10)
 SET @d = (SELECT CONVERT(VARCHAR(10), data, 103) from jogos j where codigoTimeA = 1 AND codigoTimeB = 5)
 PRINT CONVERT(DATE, @d, 103)
+
+-- select que mostra caso um time jogue mais de uma vez naquela data
+SELECT COUNT(*), t.codigoTime, j.data 
+FROM jogos j INNER JOIN times t
+ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB 
+WHERE data = '2019-01-20' 
+GROUP BY t.codigoTime, j.data
+HAVING COUNT(*)>1
+
+-- select que mostra como deve ficar, um time joga apenas uma rodada(data)
+SELECT t.codigoTime, j.data FROM times t, jogos j
+WHERE t.codigoTime = j.codigoTimeA AND data = '2019-01-20' 
+OR t.codigoTime = j.codigoTimeB AND data = '2019-01-20'
