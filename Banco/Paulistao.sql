@@ -329,23 +329,24 @@ SET @saida = 'Rodadas geradas com sucesso'
 
 CREATE FUNCTION fn_RetornaRodadas()
 RETURNS @table TABLE (
+ID 			INT	 IDENTITY(1,1) PRIMARY KEY,
 Mandante    VARCHAR(100),
-Visitante    VARCHAR(100),
-Estadio        VARCHAR(100),
-Cidade        VARCHAR(100),
-Dataj        VARCHAR(10)
+Visitante   VARCHAR(100),
+Estadio     VARCHAR(100),
+Cidade      VARCHAR(100),
+Dataj       VARCHAR(10)
 )
 AS
 BEGIN
     INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
         SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
-		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
+		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', CONVERT(VARCHAR(10), j.data, 103) AS 'Dataj' 
 		FROM times AS time1
-		INNER JOIN jogos
-		ON time1.codigoTime = jogos.codigoTimeA
+		INNER JOIN jogos j
+		ON time1.codigoTime = j.codigoTimeA
 		INNER JOIN times AS time2
-		ON time2.codigoTime = jogos.codigoTimeB
-		ORDER BY data
+		ON time2.codigoTime = j.codigoTimeB
+		ORDER BY j.[data] 
     RETURN
 END
 
@@ -353,11 +354,11 @@ END
 
 CREATE FUNCTION fn_BuscaJogos(@dat VARCHAR(10))
 RETURNS @table TABLE (
-Mandante	VARCHAR(100),
-Visitante	VARCHAR(100),
-Estadio        VARCHAR(100),
-Cidade        VARCHAR(100),
-Dataj		VARCHAR(10)
+Mandante		VARCHAR(100),
+Visitante		VARCHAR(100),
+Estadio         VARCHAR(100),
+Cidade          VARCHAR(100),
+Dataj			VARCHAR(10)
 )
 AS
 BEGIN

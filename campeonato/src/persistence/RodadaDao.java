@@ -13,13 +13,13 @@ import model.Jogos;
 
 public class RodadaDao {
 
-private Connection c;
-	
+	private Connection c;
+
 	public RodadaDao() throws ClassNotFoundException, SQLException {
 		GenericDao gDao = new GenericDao();
 		c = gDao.getConnection();
 	}
-	
+
 	public String procGeraRodadas() throws SQLException {
 		String sql = "{CALL sp_criando_rodadas (?)}";
 		CallableStatement cs = c.prepareCall(sql);
@@ -27,36 +27,36 @@ private Connection c;
 		cs.execute();
 		String saida = cs.getString(1);
 		cs.close();
-		
+
 		return saida;
 	}
-	
+
 	public List<Jogos> mostraRodadas() throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
 		String sql;
-		sql = "SELECT Mandante, Visitante, Estadio, Cidade, Dataj From fn_RetornaRodadas() ORDER BY dataj";
+		sql = "SELECT Mandante, Visitante, Estadio, Cidade, Dataj From fn_RetornaRodadas() ";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
-		
+
 		while (rs.next()) {
-		
-		Jogos j = new Jogos();
-		j.setNomeTimeA(rs.getString("Mandante"));
-		j.setNomeTimeB(rs.getString("Visitante"));
-		j.setEstadio(rs.getString("Estadio"));
-		j.setCidade(rs.getString("Cidade"));
-		j.setData(rs.getString("Dataj"));
-		
-		listaJogos.add(j);
-		
+
+			Jogos j = new Jogos();
+			j.setNomeTimeA(rs.getString("Mandante"));
+			j.setNomeTimeB(rs.getString("Visitante"));
+			j.setEstadio(rs.getString("Estadio"));
+			j.setCidade(rs.getString("Cidade"));
+			j.setData(rs.getString("Dataj"));
+
+			listaJogos.add(j);
+
 		}
-		
+
 		rs.close();
 		ps.close();
-		
+
 		return listaJogos;
 	}
-	
+
 	public List<Jogos> buscaRodada(String data) throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
 		String sql;
@@ -64,24 +64,24 @@ private Connection c;
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, data);
 		ResultSet rs = ps.executeQuery();
-		
+
 		while (rs.next()) {
-		
-		Jogos j = new Jogos();	
-			
-		j.setNomeTimeA(rs.getString("Mandante"));
-		j.setNomeTimeB(rs.getString("Visitante"));
-		j.setEstadio(rs.getString("Estadio"));
-		j.setCidade(rs.getString("Cidade"));
-		j.setData(rs.getString("Dataj"));
-		
-		listaJogos.add(j);
-		
+
+			Jogos j = new Jogos();
+
+			j.setNomeTimeA(rs.getString("Mandante"));
+			j.setNomeTimeB(rs.getString("Visitante"));
+			j.setEstadio(rs.getString("Estadio"));
+			j.setCidade(rs.getString("Cidade"));
+			j.setData(rs.getString("Dataj"));
+
+			listaJogos.add(j);
+
 		}
-		
+
 		rs.close();
 		ps.close();
-		
+
 		return listaJogos;
 	}
 }
