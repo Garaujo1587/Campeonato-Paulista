@@ -9,18 +9,14 @@ import javax.swing.JTextArea;
 import model.Times;
 import persistence.GrupoDao;
 
-public class ControllerGrupo{
-
-
-
-	
+public class ControllerGrupo {
 
 	public void geraGrupos(JTextArea taGrupo) throws ClassNotFoundException, SQLException {
 
 		GrupoDao gDao = new GrupoDao();
 		String saida = gDao.procGeraGrupos();
 		JOptionPane.showMessageDialog(null, saida, "MENSAGEM", JOptionPane.INFORMATION_MESSAGE);
-		
+
 		mostraGrupos(taGrupo);
 
 	}
@@ -30,23 +26,27 @@ public class ControllerGrupo{
 		GrupoDao gDao = new GrupoDao();
 		List<Times> listaTimes = gDao.mostraGrupos();
 
-		taGrupo.setText("");
-	
+		if (!listaTimes.isEmpty()) {
 
-		StringBuffer sb = new StringBuffer("Grupo\t\tTime\n\n");
+			taGrupo.setText("");
 
-		for (int i = 0; i < listaTimes.size(); i++) {
+			StringBuffer sb = new StringBuffer("Grupo\t\tTime\n\n");
 
-			sb.append(listaTimes.get(i).getGrupo() + "\t\t" + listaTimes.get(i).getNomeTime() + "\n");
+			for (int i = 0; i < listaTimes.size(); i++) {
 
-			if ((i + 1) % 4 == 0) {
+				sb.append(listaTimes.get(i).getGrupo() + "\t\t" + listaTimes.get(i).getNomeTime() + "\n");
 
-				sb.append("\n");
+				if ((i + 1) % 4 == 0) {
+
+					sb.append("\n");
+				}
+
+				taGrupo.setText(sb.toString());
+
 			}
-
+		} else {
+			JOptionPane.showMessageDialog(null, "Crie os grupos", "Grupo não existe", JOptionPane.ERROR_MESSAGE);
 		}
 
-		taGrupo.setText(sb.toString());
-	
 	}
 }

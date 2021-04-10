@@ -16,7 +16,7 @@ public class ControllerRodada {
 	public void geraRodadas(JTable table) throws ClassNotFoundException, SQLException {
 
 		RodadaDao rDao = new RodadaDao();
-
+		
 		String saida = rDao.procGeraRodadas();
 
 		List<Jogos> listaJogos = rDao.mostraRodadas();
@@ -37,24 +37,42 @@ public class ControllerRodada {
 
 	}
 
+	public void buscaRodadas(JTable table) throws ClassNotFoundException, SQLException {
+
+		RodadaDao rDao = new RodadaDao();
+		List<Jogos> rodadas = new ArrayList<Jogos>();
+		rodadas = rDao.mostraRodadas();
+
+		mostraRodadas(table, rodadas);
+
+	}
+
 	private void mostraRodadas(JTable table, List<Jogos> jogos) throws ClassNotFoundException, SQLException {
 
-		if (!jogos.get(0).getNomeTimeA().equalsIgnoreCase("-1")) {
-			ModeloTabelaJogos mJ = new ModeloTabelaJogos(jogos);
-			table.setModel(mJ);
-		} else {
-			table.clearSelection();
+		try {
 
-			StringBuffer sb = new StringBuffer();
+			if (!jogos.get(0).getNomeTimeA().equalsIgnoreCase("-1")) {
+				ModeloTabelaJogos mJ = new ModeloTabelaJogos(jogos);
+				table.setModel(mJ);
+			} else {
+				table.clearSelection();
 
-			sb.append("Datas dos jogos \n");
+				StringBuffer sb = new StringBuffer();
 
-			for (int i = 0; i < jogos.size(); i++) {
-				sb.append(jogos.get(i).getData() + "\n");
+				sb.append("Datas dos jogos \n\n");
 
+				for (int i = 0; i < jogos.size(); i++) {
+					sb.append(jogos.get(i).getData() + "\n");
+
+				}
+
+				JOptionPane.showMessageDialog(null, sb.toString(), "Data não existe", JOptionPane.ERROR_MESSAGE);
 			}
 
-			JOptionPane.showMessageDialog(null, sb.toString(), "Data não existe", JOptionPane.ERROR_MESSAGE);
+		} catch (IndexOutOfBoundsException e) {
+
+			JOptionPane.showMessageDialog(null, "crie novas rodadas", "Rodada não existe", JOptionPane.ERROR_MESSAGE);
+
 		}
 
 	}

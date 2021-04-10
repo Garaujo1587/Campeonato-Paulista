@@ -26,6 +26,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTable;
+import javax.swing.JCheckBox;
 
 public class TelaCampeonatoPaulista extends JFrame {
 
@@ -236,11 +237,19 @@ public class TelaCampeonatoPaulista extends JFrame {
 		tableBusca.setForeground(Color.BLACK);
 		scrollPane_1.setViewportView(tableBusca);
 
+		final JCheckBox cbTodasDatas = new JCheckBox("Todas as datas");
+		cbTodasDatas.setBounds(396, 52, 151, 23);
+		pBuscaRodadas.add(cbTodasDatas);
+
 		btnBuscaJogo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if (cbTodasDatas.isSelected()) {
+						cR.buscaRodadas(tableBusca);
 
-					cR.buscaRodadas(tableBusca, tfData.getText());
+					} else {
+						cR.buscaRodadas(tableBusca, tfData.getText());
+					}
 				} catch (ClassNotFoundException | SQLException e1) {
 
 					JOptionPane.showMessageDialog(null, "Não é uma Data valida", "Erro", JOptionPane.ERROR_MESSAGE);
