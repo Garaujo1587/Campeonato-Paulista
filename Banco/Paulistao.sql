@@ -6,16 +6,11 @@ CREATE TABLE times (
 codigoTime INT NOT NULL,  
 nomeTime VARCHAR(100),
 cidade VARCHAR(100),
-estadio VARCHAR(100)
+estadio VARCHAR(100),
+grupo CHAR(1),
 PRIMARY KEY (codigoTime)
 )
 
-CREATE TABLE grupos (
-grupo CHAR(1) NOT NULL,  
-codigoTime INT NOT NULL
-PRIMARY KEY (codigoTime)
-FOREIGN KEY (codigoTime) REFERENCES times (codigoTime)
-)
 
 CREATE TABLE jogos (
 codigoTimeA INT NOT NULL,  
@@ -28,199 +23,372 @@ FOREIGN KEY(codigoTimeA) REFERENCES times (codigoTime),
 FOREIGN KEY(codigoTimeB) REFERENCES times (codigoTime)
 ) 
 
-INSERT INTO times VALUES 
-(1, 'Botafogo-SP', 'Ribeir�o Preto', 'Santa Cruz'),
-(2, 'Bragantino', 'Bragantino Paulista', 'Nabi Abi Chedid'),
-(3, 'Corinthians', 'S�o Paulo',	'Arena Corinthians'),
-(4, 'Ferrovi�ria', 'Araraquara', 'Fonte Luminosa'),
-(5, 'Guarani', 'Campinas', 'Brinco de Ouro da Princesa'),
-(6, 'Ituano', 'Itu', 'Novelli J�nior'),
-(7, 'Mirassol',	'Mirassol', 'Jos� Maria de Campos Maia'),
-(8, 'Novorizontino', 'Novo Horizonte', 'Jorge Ismael de Biasi'),
-(9, 'Oeste', 'Barueri',	'Arena Barueri'),
-(10, 'Palmeiras', 'S�o Paulo', 'Allianz Parque'),
-(11, 'Ponte Preta', 'Campinas',	'Mois�s Lucarelli'),
-(12, 'Red Bull Brasil',	'Campinas',	'Mois�s Lucarelli'),
-(13, 'Santos', 'Santos', 'Vila Belmiro'),
-(14, 'S�o Bento', 'Sorocaba', 'Walter Ribeiro'),
-(15, 'S�o Caetano',	'S�o Caetano do Sul', 'Anacletto Campanella'),
-(16, 'S�o Paulo', 'S�o Paulo', 'Morumbi')
-
--- PROCEDURE QUE GERA OS GRUPOS ALEATORIAMENTE E COM AS REGRAS DO CAMPEONATO
+-- PROCEDURE CRIA OS GRUPOS
 
 CREATE PROCEDURE sp_criando_grupos (@saida VARCHAR(MAX) OUTPUT) 
 AS
+
+	DECLARE @COD_TIME AS INT,
+			@COD_SORTEIO AS INT,
+			@COD_GRUPO AS INT,
+			@I AS INT
+
+	SET @COD_GRUPO = 65
+	SET @COD_SORTEIO = 1
+
+-- DELETA VALERES NA TABELA TIMES
+	DELETE FROM jogos
 	DELETE FROM times
--- Inserindo os times grandes nos grupos de forma aleatoria
-DECLARE @cta INT,
-		@time INT,
-		@grupo CHAR(1)
 
-	SET @cta = 0
-	SET @grupo = 'A'
+-- CRIA TABELAS PROVISORIAS 
 
-WHILE (@cta < 4)
-BEGIN
-	SET @time = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
+	CREATE TABLE #COD_SORTEIO(
+		COD INT
+	)
 
-	IF NOT EXISTS (SELECT * FROM grupos WHERE codigoTime = @time)
+	CREATE TABLE #time (
+	codigoTime INT,  
+	nomeTime VARCHAR(100),
+	cidade VARCHAR(100),
+	estadio VARCHAR(100)
+	)
+
+-- INSERE OS CODIGOS DOS CABEÇAS DE CHAVES
+	INSERT INTO #COD_SORTEIO VALUES
+	(1),
+	(5),
+	(9),
+	(13)
+
+-- INSERE TIMES CABEÇAS DE CHAVES 
+	INSERT INTO #time VALUES 
+	(1, 'Corinthians', 'São Paulo',	'Arena Corinthians'),
+	(2, 'Palmeiras', 'São Paulo', 'Allianz Parque'),
+	(3, 'São Paulo', 'São Paulo', 'Morumbi'),
+	(4, 'Santos', 'Santos', 'Vila Belmiro')
+
+	-- SORTEIA OS CABEÇAS DE CHAVES
+	WHILE(@COD_SORTEIO < 14)
 	BEGIN
-		IF (@time = 3 OR @time = 10 OR @time = 13 OR @time = 16)
-		BEGIN
-			IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'A') = 1)
-			BEGIN
-				SET @grupo = 'B'
-			END
-			IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'B') = 1)
-			BEGIN
-				SET @grupo = 'C'
-			END
-			IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'C') = 1)
-			BEGIN
-				SET @grupo = 'D'
-			END
-			INSERT INTO grupos VALUES
-			(@grupo, @time)
-			SET @cta = @cta + 1
-		END
+	
+
+	-- SORTEIA O TIME
+		SET @COD_TIME = (SELECT TOP 1 T.codigoTime FROM  #time T ORDER BY NEWID())
+
+
+	-- INSERE TIME NA TABELA DOS TIMES
+		INSERT INTO times VALUES(
+		(@COD_SORTEIO),
+		(SELECT T.nomeTime FROM #time T WHERE T.codigoTime = @COD_TIME),
+		(SELECT T.cidade FROM #time T WHERE T.codigoTime = @COD_TIME),
+		(SELECT T.estadio FROM #time T WHERE T.codigoTime = @COD_TIME),
+		(NCHAR(@COD_GRUPO))
+		)
+
+	-- DELETA VALORES JÁ SORTEADOS 
+		DELETE FROM #COD_SORTEIO WHERE #COD_SORTEIO.COD = @COD_SORTEIO
+		DELETE FROM #time WHERE #time.codigoTime = @COD_TIME
+
+	-- SET NOVO VALOR DO GRUPO E CODIGO DO TIME
+		SET @COD_GRUPO = @COD_GRUPO + 1
+		SET @COD_SORTEIO =  @COD_SORTEIO + 4
+
 	END
-END
 
--- Inserindo os outros times	
-	SET @grupo = 'A'
+	-- LIMPAS TABELAS
 
-WHILE (@cta < 16)
-BEGIN
+	DELETE FROM #COD_SORTEIO
+	DELETE FROM #time
 
-	SET @time = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
-
-	IF NOT EXISTS (SELECT * FROM grupos WHERE codigoTime = @time)
+	-- INSERE VALORES NAS TABELAS PROVISORIAS 
+	SET @COD_SORTEIO = 2
+	WHILE(@COD_SORTEIO < 13)
 	BEGIN
-		IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'A') = 4)
+		IF(@COD_SORTEIO <> 5 AND @COD_SORTEIO <> 9 AND @COD_SORTEIO <> 13)
 		BEGIN
-			SET @grupo = 'B'
+			INSERT INTO #COD_SORTEIO VALUES
+			(@COD_SORTEIO)
 		END
-		IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'B') = 4)
-		BEGIN
-			SET @grupo = 'C'
-		END
-		IF ((SELECT COUNT (grupo) FROM grupos WHERE grupo = 'C') = 4)
-		BEGIN
-			SET @grupo = 'D'
-		END
-	INSERT INTO grupos VALUES
-	(@grupo, @time)
-	SET @cta = @cta + 1
+		SET @COD_SORTEIO = @COD_SORTEIO + 1
 	END
-END
-SET @saida = 'Todos os grupos est�o completos'
 
--- mostrando os grupos formados
-SELECT g.grupo, g.codigoTime, t.nomeTime FROM grupos g, times t WHERE t.codigoTime = g.codigoTime
-ORDER BY grupo
+	INSERT INTO #time VALUES
+	(1, 'Botafogo-SP', 'Ribeirão Preto', 'Santa Cruz'),
+	(2, 'Bragantino', 'Bragantino Paulista', 'Nabi Abi Chedid'),
+	(3, 'Ferroviária', 'Araraquara', 'Fonte Luminosa'),
+	(4, 'Guarani', 'Campinas', 'Brinco de Ouro da Princesa'),
+	(5, 'Ituano', 'Itu', 'Novelli Júnior'),
+	(6, 'Mirassol',	'Mirassol', 'José Maria de Campos Maia'),
+	(7, 'Novorizontino', 'Novo Horizonte', 'Jorge Ismael de Biasi'),
+	(8, 'Oeste', 'Barueri',	'Arena Barueri'),
+	(9, 'Ponte Preta', 'Campinas',	'Moisés Lucarelli'),
+	(10, 'Red Bull Brasil',	'Campinas',	'Moisés Lucarelli'),
+	(11, 'São Bento', 'Sorocaba', 'Walter Ribeiro'),
+	(12, 'São Caetano',	'São Caetano do Sul', 'Anacletto Campanella')
 
--- chamando a procedure para formar os grupos
-DECLARE @out VARCHAR(MAX)
-EXEC sp_criando_grupos @out OUTPUT
-PRINT @out
+	SET @COD_GRUPO = 65
+	SET @COD_SORTEIO = 2
+	WHILE(@COD_GRUPO < 69)
+	BEGIN
+	
+	SET @I = 0
+		
+		WHILE(@I < 3)
+		BEGIN
+			
+			SET @COD_TIME = (SELECT TOP 1 T.codigoTime FROM  #time T ORDER BY NEWID())
 
-/*
-Formas de gerar n�meros aleat�rios
+			-- INSERE TIME NA TABELA DOS TIMES
+			INSERT INTO times VALUES(
+			(@COD_SORTEIO),
+			(SELECT T.nomeTime FROM #time T WHERE T.codigoTime = @COD_TIME),
+			(SELECT T.cidade FROM #time T WHERE T.codigoTime = @COD_TIME),
+			(SELECT T.estadio FROM #time T WHERE T.codigoTime = @COD_TIME),
+			(NCHAR(@COD_GRUPO))
+			)
 
-SELECT TOP 4 t.codigoTime FROM times t ORDER BY NEWID()
+			-- DELETA VALORES JÁ SORTEADOS 
+			DELETE FROM #COD_SORTEIO WHERE #COD_SORTEIO.COD = @COD_SORTEIO
+			DELETE FROM #time WHERE #time.codigoTime = @COD_TIME
 
-Select cast(RAND(checksum(newid()))*17 as int )
+			SET @I = @I + 1
+			SET @COD_SORTEIO = @COD_SORTEIO + 1
 
-SELECT ABS(CHECKSUM(NewId())) % 17
+		END 
+		SET @COD_SORTEIO = @COD_SORTEIO + 1
+		SET @COD_GRUPO = @COD_GRUPO + 1
+	END
 
-SELECT CAST(RAND(CHECKSUM(NEWID())) * 16 AS INT) + 1
-*/
 
--- PROCEDURE QUE GERA OS JOGOS E AS RODADAS - INCOMPLETA
+
+SET @saida = 'Grupos gerados com sucesso'
+
+
+-- PROCEDURE QUE GERA OS JOGOS E AS RODADAS
 
 CREATE PROCEDURE sp_criando_rodadas (@saida VARCHAR(MAX) OUTPUT)
 AS
 	DELETE FROM jogos
-DECLARE @ctarodada AS INT,
-		@ctajogo AS INT,
-		@timeA AS INT,
-		@timeB AS INT,
-		@dtjogo AS DATE
+	-- DECLARA VARIAVEIS 
+	DECLARE @I AS INT,
+			@DTJOGOTJOGO AS DATE,
+			@A AS INT,
+			@B AS INT,
+			@F AS INT,
+			@RA AS INT,
+			@RB AS INT,
+			@ID AS INT,
+			@J AS INT,
+			@FLAG AS INT,
+			@DTJOGO AS DATE
 
-SET @ctarodada = 0
-SET @dtjogo = '2019-01-20'
+	-- CRIA TABELAS TEMPORARIAS 
 
-WHILE (@ctarodada < 12)
-BEGIN
-SET @ctajogo = 0
-	IF (@ctarodada <> 0 AND @ctarodada % 2 <> 0)
-	BEGIN 
-		SET @dtjogo = (DATEADD(DAY, 3, @dtjogo))
-	END
-	IF (@ctarodada <> 0 AND @ctarodada % 2 = 0)
+	CREATE TABLE #TODOS_JOGOS(
+	ID INT,
+	TIMEA INT,
+	TIMEB INT)
+
+	CREATE TABLE #REFERENCIAS(
+	ID INT,
+	R INT)
+
+	CREATE TABLE #TODASDATAS(
+	ID INT,
+	DATA DATE UNIQUE)
+
+	-- GERA TODAS AS DATAS
+	SET @I = 0
+	SET @DTJOGOTJOGO = '2019-01-20'
+
+	WHILE(@I < 12)
 	BEGIN
-		SET @dtjogo = (DATEADD(DAY, 4, @dtjogo))
-	END
-	WHILE (@ctajogo < 8)
-	BEGIN
 
-		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
-		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
-
-	WHILE (@timeA = (SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeA AND j.data = @dtjogo) 
-	OR @timeA = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeA AND j.data = @dtjogo)
-	AND @timeB = (SELECT j.codigoTimeA FROM jogos j WHERE j.codigoTimeA = @timeB AND j.data = @dtjogo) 
-	OR @timeB = (SELECT j.codigoTimeB FROM jogos j WHERE j.codigoTimeB = @timeB AND j.data = @dtjogo)) 
-	BEGIN 
-		SET @timeA = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())
-		SET @timeB = (SELECT TOP 1 t.codigoTime FROM times t ORDER BY NEWID())		
-	END
-		IF (@timeA <> @timeB 
-		AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) <> (SELECT grupo FROM grupos WHERE codigoTime = @timeB)
-		AND NOT EXISTS(SELECT * FROM jogos WHERE codigoTimeA = @timeA AND codigoTimeB = @timeB)
-/*		AND NOT EXISTS(SELECT * FROM jogos j, times t 
-		WHERE j.codigoTimeA = t.codigoTime AND data = @dtjogo AND j.codigoTimeA = @timeA 
-		OR j.codigoTimeB = t.codigoTime AND data = @dtjogo AND j.codigoTimeB = @timeB) */
-/*		AND NOT EXISTS(SELECT codigoTimeA, codigoTimeB FROM jogos WHERE codigoTimeA = @timeA AND data = @dtjogo
-		OR codigoTimeB = @timeA AND data = @dtjogo) 
-		AND NOT EXISTS(SELECT codigoTimeA, codigoTimeB FROM jogos WHERE codigoTimeA = @timeB AND data = @dtjogo
-		OR codigoTimeB = @timeB AND data = @dtjogo)*/ 
-		AND NOT (SELECT COUNT(*) FROM jogos WHERE data = @dtjogo AND (codigoTimeA = @timeA OR codigoTimeB = @timeB 
-		OR codigoTimeA = @timeB OR codigoTimeB = @timeA)) >= 1)
-		BEGIN
-			INSERT INTO jogos VALUES 
-			(@timeA, @timeB, NULL, NULL, @dtjogo)
-			SET @ctajogo = @ctajogo + 1	 
-			IF (@ctajogo = 7 AND (SELECT grupo FROM grupos WHERE codigoTime = @timeA) = (SELECT grupo FROM grupos WHERE codigoTime = @timeB))
-			BEGIN
-				DELETE FROM jogos WHERE data = @dtjogo
-				SET @dtjogo = @dtjogo
-			END 
+		IF (@I <> 0 AND @I % 2 <> 0)
+		BEGIN 
+			SET @DTJOGOTJOGO = (DATEADD(DAY, 3, @DTJOGOTJOGO))
 		END
+		IF (@I <> 0 AND @I % 2 = 0)
+		BEGIN
+			SET @DTJOGOTJOGO = (DATEADD(DAY, 4, @DTJOGOTJOGO))
+		END
+	
+		INSERT INTO #TODASDATAS VALUES
+		((@I + 1),(@DTJOGOTJOGO))
+
+		SET @I = @I + 1
 	END
-	SET @ctarodada = @ctarodada + 1
+	
+	-- INSERE VALOR DE REFERENCIA
+	INSERT INTO #REFERENCIAS VALUES
+	(1,1), (2,5), (3,9), (4,13),
+	(5,1), (6,9), (7,5), (8,13),
+	(9,1), (10,13), (11,5), (12,9)
+
+		-- GERA TODOS OS JOGOS
+	DELETE FROM #TODOS_JOGOS
+	
+		
+	SET @I = 1
+	SET @ID = 1
+	
+	WHILE(@I < 12)
+	BEGIN
+	
+		SET @RA = (SELECT R.R FROM #REFERENCIAS R WHERE R.ID = @I)
+		SET @RB = (SELECT R.R FROM #REFERENCIAS R WHERE R.ID = @I + 1)
+		SET @F = 1
+		SET @A = @RA
+		SET @B = @RB
+	
+		WHILE(@F < 17)
+		BEGIN
+	
+	
+			INSERT INTO #TODOS_JOGOS VALUES
+			(@ID, @A, @B)
+			SET @ID = @ID + 1
+	
+			IF(@B = (@RB + 3))
+			BEGIN
+				SET @B = @RB
+			END
+			ELSE
+			BEGIN
+				SET @B =  @B + 1
+			END
+	
+	
+			IF(@A = (@RA + 3))
+			BEGIN
+				SET @A =  @RA
+				SET @B =  @B + 1
+			END
+			ELSE
+			BEGIN
+				SET @A = @A +1	
+			END
+	
+			SET @F = @F + 1
+	
+		END
+		
+	
+		SET @I = @I + 2
+	END
+
+	-- COLOCA JOGOS NA TABELA JOGOS
+	SET @FLAG = 0
+	SET @J = 1
+
+	SET @DTJOGO = (SELECT TOP 1 t.DATA FROM #TODASDATAS t ORDER BY NEWID())
+	DELETE FROM #TODASDATAS WHERE #TODASDATAS.DATA = @DTJOGO
+	WHILE(@J < 92)
+	BEGIN
+
+		IF(@FLAG = 0)
+		BEGIN
+			INSERT INTO jogos VALUES
+			((SELECT J.TIMEA FROM #TODOS_JOGOS J WHERE J.ID = @J) , (SELECT J.TIMEB FROM #TODOS_JOGOS J WHERE J.ID = @J), NULL, NULL, @DTJOGO),
+			((SELECT J.TIMEA FROM #TODOS_JOGOS J WHERE J.ID = (@J + 16)) , (SELECT J.TIMEB FROM #TODOS_JOGOS J WHERE J.ID = (@J + 16)), NULL, NULL, @DTJOGO)
+		END
+		ELSE
+		BEGIN
+			INSERT INTO jogos VALUES
+			((SELECT J.TIMEB FROM #TODOS_JOGOS J WHERE J.ID = @J) , (SELECT J.TIMEA FROM #TODOS_JOGOS J WHERE J.ID = @J), NULL, NULL, @DTJOGO),
+			((SELECT J.TIMEB FROM #TODOS_JOGOS J WHERE J.ID = (@J + 16)) , (SELECT J.TIMEA FROM #TODOS_JOGOS J WHERE J.ID = (@J + 16)), NULL, NULL, @DTJOGO)
+		END
+		IF(@J % 16 = 0)
+		BEGIN
+			SET @J = @J + 16
+		END
+
+
+		IF(@J % 4 = 0)
+		BEGIN
+			SET @DTJOGO = (SELECT TOP 1 t.DATA FROM #TODASDATAS t ORDER BY NEWID())
+			DELETE FROM #TODASDATAS WHERE #TODASDATAS.DATA = @DTJOGO
+			IF(@FLAG = 0)
+			BEGIN
+				SET @FLAG = 1
+			END
+			ELSE
+			BEGIN
+				SET @FLAG = 0
+			END
+		END
+
+		SET @J = @J +1
+	END
+
+
+SET @saida = 'Rodadas geradas com sucesso'
+
+
+-- FUNCTION QUE MOSTRA AS RODADAS
+
+CREATE FUNCTION fn_RetornaRodadas()
+RETURNS @table TABLE (
+Mandante    VARCHAR(100),
+Visitante    VARCHAR(100),
+Estadio        VARCHAR(100),
+Cidade        VARCHAR(100),
+Dataj        VARCHAR(10)
+)
+AS
+BEGIN
+    INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
+        SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
+		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
+		FROM times AS time1
+		INNER JOIN jogos
+		ON time1.codigoTime = jogos.codigoTimeA
+		INNER JOIN times AS time2
+		ON time2.codigoTime = jogos.codigoTimeB
+		ORDER BY data
+    RETURN
 END
-SET @saida = 'Rodadas geradas'
 
--- mostrando os jogos
-SELECT * FROM jogos j 
-ORDER BY data
+-- FUNCTION QUE BUSCA TODOS OS JOGOS DE UMA DATA
 
--- chamando a procedure para gerar os jogos e as rodadas
-DECLARE @out VARCHAR(MAX)
-EXEC sp_criando_rodadas @out OUTPUT
-PRINT @out
+CREATE FUNCTION fn_BuscaJogos(@dat VARCHAR(10))
+RETURNS @table TABLE (
+Mandante	VARCHAR(100),
+Visitante	VARCHAR(100),
+Estadio        VARCHAR(100),
+Cidade        VARCHAR(100),
+Dataj		VARCHAR(10)
+)
+AS
+BEGIN
 
--- select que mostra o problema: um time n�o pode jogar duas vezes na mesma rodada(data)
-SELECT COUNT(*), t.codigoTime, j.data 
-FROM jogos j INNER JOIN times t
-ON t.codigoTime = j.codigoTimeA OR t.codigoTime = j.codigoTimeB 
-WHERE data = '2019-01-20' 
-GROUP BY t.codigoTime, j.data
-HAVING COUNT(*)>1
+	SET @dat = CONVERT(DATE, @dat, 103)
+	
+	IF NOT EXISTS (SELECT * FROM jogos WHERE data = @dat)
+	BEGIN
+		INSERT INTO @table (Mandante, Dataj)
+			SELECT '-1' AS 'Mandante',
+			CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
+			FROM times AS time1
+			INNER JOIN jogos
+			ON time1.codigoTime = jogos.codigoTimeA
+			INNER JOIN times AS time2
+			ON time2.codigoTime = jogos.codigoTimeB
+			GROUP BY data
+	END
+	ELSE
+	BEGIN
+	INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
+		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
+		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade',
+		CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
+		FROM times AS time1
+		INNER JOIN jogos
+		ON time1.codigoTime = jogos.codigoTimeA
+		INNER JOIN times AS time2
+		ON time2.codigoTime = jogos.codigoTimeB
+		WHERE data = @dat
+	END
 
--- select que mostra como deve ficar, um time joga apenas uma rodada(data)
-SELECT t.codigoTime, j.data FROM times t, jogos j
-WHERE t.codigoTime = j.codigoTimeA AND data = '2019-02-24' 
-OR t.codigoTime = j.codigoTimeB AND data = '2019-02-24'
-ORDER BY t.codigoTime
+	RETURN
+END

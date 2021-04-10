@@ -42,8 +42,6 @@ public class ControllerBuscaJogos implements ActionListener {
 		for (Jogos jogos : listaJogos) {
 			sb.append(jogos.getNomeTimeA() + "\t\t" + jogos.getNomeTimeB() + "\t\t" + jogos.getData() + "\n");
 		}
-
-		System.out.println(data);
 		taBusca.setText(sb.toString());
 	}
 
