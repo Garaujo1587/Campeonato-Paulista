@@ -184,8 +184,8 @@ public class TelaCampeonatoPaulista extends JFrame {
 				try {
 					cR.geraRodadas(table);
 				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				
+					JOptionPane.showMessageDialog(null, "Crie os Grupos", "Grupo não existe", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
