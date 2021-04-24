@@ -324,7 +324,6 @@ AS
 
 SET @saida = 'Rodadas geradas com sucesso'
 
-
 -- FUNCTION QUE MOSTRA AS RODADAS
 
 CREATE FUNCTION fn_RetornaRodadas()
@@ -341,7 +340,19 @@ Dataj       VARCHAR(10)
 AS
 BEGIN
     INSERT INTO @table (Mandante, Visitante,Gol_M , Gol_V, Estadio, Cidade, Dataj)
-        SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', j.golsTimeA as 'Gol_M', j.golsTimeB as 'Gol_V',
+        SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante',
+        CASE WHEN (j.golsTimeA  IS NOT NULL)
+		THEN
+			j.golsTimeA 
+		ELSE
+			-1
+    	END as 'Gol_M', 
+        CASE WHEN (j.golsTimeB  IS NOT NULL)
+		THEN
+			 j.golsTimeB
+		ELSE
+			-1
+	    END as 'Gol_V',
 		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', CONVERT(VARCHAR(10), j.data, 103) AS 'Dataj' 
 		FROM times AS time1
 		INNER JOIN jogos j
@@ -351,7 +362,6 @@ BEGIN
 		ORDER BY j.[data] 
     RETURN
 END
-
 -- FUNCTION QUE BUSCA TODOS OS JOGOS DE UMA DATA
 
 CREATE FUNCTION fn_BuscaJogos(@dat VARCHAR(10))
@@ -384,7 +394,19 @@ BEGIN
 	ELSE
 	BEGIN
 	INSERT INTO @table (Mandante, Visitante,Gol_M , Gol_V, Estadio, Cidade, Dataj)
-		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante',jogos.golsTimeA as 'Gol_M', jogos.golsTimeB as 'Gol_V', 
+		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante',
+		CASE WHEN (jogos.golsTimeA  IS NOT NULL)
+		THEN
+			jogos.golsTimeA 
+		ELSE
+			-1
+    	END as 'Gol_M', 
+        CASE WHEN (jogos.golsTimeB  IS NOT NULL)
+		THEN
+			 jogos.golsTimeB
+		ELSE
+			-1
+	    END as 'Gol_V',
 		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade',
 		CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
 		FROM times AS time1

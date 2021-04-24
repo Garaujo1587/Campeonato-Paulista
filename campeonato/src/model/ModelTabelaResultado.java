@@ -40,9 +40,17 @@ public class ModelTabelaResultado extends AbstractTableModel {
 		case 0:
 			return jogos.get(linha).getNomeTimeA();
 		case 1:
-			return jogos.get(linha).getGolA();
+			if (jogos.get(linha).getGolA() == -1) {
+				return "-";
+			} else {
+				return jogos.get(linha).getGolA();
+			}
 		case 2:
-			return jogos.get(linha).getGolB();
+			if (jogos.get(linha).getGolB() == -1) {
+				return "-";
+			} else {
+				return jogos.get(linha).getGolB();
+			}
 		case 3:
 			return jogos.get(linha).getNomeTimeB();
 		case 4:
