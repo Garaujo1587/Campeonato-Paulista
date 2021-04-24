@@ -34,7 +34,7 @@ public class RodadaDao {
 	public List<Jogos> mostraRodadas() throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
 		String sql;
-		sql = "SELECT Mandante, Visitante, Estadio, Cidade, Dataj From fn_RetornaRodadas() ";
+		sql = "SELECT Mandante, Visitante,Gol_M , Gol_V ,Estadio, Cidade, Dataj From fn_RetornaRodadas() ";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
 
@@ -43,6 +43,8 @@ public class RodadaDao {
 			Jogos j = new Jogos();
 			j.setNomeTimeA(rs.getString("Mandante"));
 			j.setNomeTimeB(rs.getString("Visitante"));
+			j.setGolA(rs.getInt("Gol_M"));
+			j.setGolB(rs.getInt("Gol_V"));
 			j.setEstadio(rs.getString("Estadio"));
 			j.setCidade(rs.getString("Cidade"));
 			j.setData(rs.getString("Dataj"));
@@ -60,7 +62,7 @@ public class RodadaDao {
 	public List<Jogos> buscaRodada(String data) throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
 		String sql;
-		sql = "SELECT Mandante, Visitante, Estadio,Cidade, Dataj FROM fn_BuscaJogos(?) ";
+		sql = "SELECT Mandante, Visitante, Gol_M , Gol_V, Estadio, Cidade, Dataj FROM fn_BuscaJogos(?) ";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, data);
 		ResultSet rs = ps.executeQuery();
@@ -71,6 +73,8 @@ public class RodadaDao {
 
 			j.setNomeTimeA(rs.getString("Mandante"));
 			j.setNomeTimeB(rs.getString("Visitante"));
+			j.setGolA(rs.getInt("Gol_M"));
+			j.setGolB(rs.getInt("Gol_V"));
 			j.setEstadio(rs.getString("Estadio"));
 			j.setCidade(rs.getString("Cidade"));
 			j.setData(rs.getString("Dataj"));

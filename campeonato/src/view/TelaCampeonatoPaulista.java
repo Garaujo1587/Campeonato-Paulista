@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
 import controller.ControllerGrupo;
+import controller.ControllerInserirResultados;
 import controller.ControllerRodada;
 
 import javax.swing.JTabbedPane;
@@ -35,12 +36,15 @@ public class TelaCampeonatoPaulista extends JFrame {
 	private JTable table;
 	private ControllerGrupo cG = new ControllerGrupo();
 	private ControllerRodada cR = new ControllerRodada();
+	private ControllerInserirResultados cIR = new ControllerInserirResultados();
 	private JTable tableBusca;
+	private JTable tableInsereResultado;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
 					TelaCampeonatoPaulista frame = new TelaCampeonatoPaulista();
 					frame.setVisible(true);
 					frame.setTitle("Campeonato Paulista");
@@ -240,7 +244,11 @@ public class TelaCampeonatoPaulista extends JFrame {
 		final JCheckBox cbTodasDatas = new JCheckBox("Todas as datas");
 		cbTodasDatas.setBounds(396, 52, 151, 23);
 		pBuscaRodadas.add(cbTodasDatas);
-
+		
+		JPanel pInserirResultado = new JPanel();
+		tabbedPane.addTab("Inserir Resultados", null, pInserirResultado, null);
+		pInserirResultado.setLayout(null);
+		
 		btnBuscaJogo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -249,6 +257,57 @@ public class TelaCampeonatoPaulista extends JFrame {
 
 					} else {
 						cR.buscaRodadas(tableBusca, tfData.getText());
+					}
+				} catch (ClassNotFoundException | SQLException e1) {
+
+					JOptionPane.showMessageDialog(null, "Não é uma Data valida", "Erro", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		
+		JLabel lblInsereResultado = new JLabel("INSERIR RESULTADOS");
+		lblInsereResultado.setForeground(Color.BLUE);
+		lblInsereResultado.setFont(new Font("Dialog", Font.BOLD, 20));
+		lblInsereResultado.setBounds(232, 18, 259, 43);
+		pInserirResultado.add(lblInsereResultado);
+		
+		JLabel lblDigite_1 = new JLabel("Digite uma data");
+		lblDigite_1.setForeground(Color.DARK_GRAY);
+		lblDigite_1.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lblDigite_1.setBounds(87, 111, 127, 23);
+		pInserirResultado.add(lblDigite_1);
+		
+		final JFormattedTextField tfData_1 = new JFormattedTextField(mascaraData);
+		tfData_1.setBounds(232, 111, 102, 23);
+		pInserirResultado.add(tfData_1);
+		
+		JButton btnBuscaJogo_1 = new JButton("BUSCAR");
+		btnBuscaJogo_1.setForeground(Color.BLUE);
+		btnBuscaJogo_1.setFont(new Font("Dialog", Font.PLAIN, 12));
+		btnBuscaJogo_1.setBounds(399, 111, 86, 23);
+		pInserirResultado.add(btnBuscaJogo_1);
+		
+		JScrollPane scrollPane_1_1 = new JScrollPane();
+		scrollPane_1_1.setBounds(12, 145, 705, 302);
+		pInserirResultado.add(scrollPane_1_1);
+		
+		tableInsereResultado = new JTable();
+		tableInsereResultado.setToolTipText("");
+		tableInsereResultado.setForeground(Color.BLACK);
+		scrollPane_1_1.setViewportView(tableInsereResultado);
+		
+		final JCheckBox cbTodasDatas_1 = new JCheckBox("Todas as datas");
+		cbTodasDatas_1.setBounds(396, 69, 151, 23);
+		pInserirResultado.add(cbTodasDatas_1);
+
+		btnBuscaJogo_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (cbTodasDatas_1.isSelected()) {
+						cIR.buscaRodadas(tableInsereResultado);
+
+					} else {
+						cIR.buscaRodadas(tableInsereResultado, tfData_1.getText());
 					}
 				} catch (ClassNotFoundException | SQLException e1) {
 
