@@ -332,14 +332,16 @@ RETURNS @table TABLE (
 ID 			INT	 IDENTITY(1,1) PRIMARY KEY,
 Mandante    VARCHAR(100),
 Visitante   VARCHAR(100),
+Gol_M		int,
+Gol_V		int,
 Estadio     VARCHAR(100),
 Cidade      VARCHAR(100),
 Dataj       VARCHAR(10)
 )
 AS
 BEGIN
-    INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
-        SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
+    INSERT INTO @table (Mandante, Visitante,Gol_M , Gol_V, Estadio, Cidade, Dataj)
+        SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', j.golsTimeA as 'Gol_M', j.golsTimeB as 'Gol_V',
 		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade', CONVERT(VARCHAR(10), j.data, 103) AS 'Dataj' 
 		FROM times AS time1
 		INNER JOIN jogos j
@@ -356,6 +358,8 @@ CREATE FUNCTION fn_BuscaJogos(@dat VARCHAR(10))
 RETURNS @table TABLE (
 Mandante		VARCHAR(100),
 Visitante		VARCHAR(100),
+Gol_M		int,
+Gol_V		int,
 Estadio         VARCHAR(100),
 Cidade          VARCHAR(100),
 Dataj			VARCHAR(10)
@@ -379,12 +383,12 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-	INSERT INTO @table (Mandante, Visitante, Estadio, Cidade, Dataj)
-		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante', 
+	INSERT INTO @table (Mandante, Visitante,Gol_M , Gol_V, Estadio, Cidade, Dataj)
+		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante',jogos.golsTimeA as 'Gol_M', jogos.golsTimeB as 'Gol_V', 
 		time1.estadio AS 'Estadio', time1.cidade AS 'Cidade',
 		CONVERT(VARCHAR(10), data, 103) AS 'Dataj' 
 		FROM times AS time1
-		INNER JOIN jogos
+		INNER JOIN jogos 
 		ON time1.codigoTime = jogos.codigoTimeA
 		INNER JOIN times AS time2
 		ON time2.codigoTime = jogos.codigoTimeB
