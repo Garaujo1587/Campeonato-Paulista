@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -22,12 +23,14 @@ import javax.swing.text.MaskFormatter;
 import controller.ControllerGrupo;
 import controller.ControllerInserirResultados;
 import controller.ControllerRodada;
+import model.Jogos;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTable;
 import javax.swing.JCheckBox;
+import javax.swing.JTextField;
 
 public class TelaCampeonatoPaulista extends JFrame {
 
@@ -39,12 +42,14 @@ public class TelaCampeonatoPaulista extends JFrame {
 	private ControllerInserirResultados cIR = new ControllerInserirResultados();
 	private JTable tableBusca;
 	private JTable tableInsereResultado;
+	private JTextField tFGolA;
+	private JTextField tFGolB;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+
 					TelaCampeonatoPaulista frame = new TelaCampeonatoPaulista();
 					frame.setVisible(true);
 					frame.setTitle("Campeonato Paulista");
@@ -188,8 +193,9 @@ public class TelaCampeonatoPaulista extends JFrame {
 				try {
 					cR.geraRodadas(table);
 				} catch (ClassNotFoundException | SQLException e1) {
-				
-					JOptionPane.showMessageDialog(null, "Crie os Grupos", "Grupo não existe", JOptionPane.ERROR_MESSAGE);
+
+					JOptionPane.showMessageDialog(null, "Crie os Grupos", "Grupo não existe",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -244,11 +250,11 @@ public class TelaCampeonatoPaulista extends JFrame {
 		final JCheckBox cbTodasDatas = new JCheckBox("Todas as datas");
 		cbTodasDatas.setBounds(396, 52, 151, 23);
 		pBuscaRodadas.add(cbTodasDatas);
-		
+
 		JPanel pInserirResultado = new JPanel();
 		tabbedPane.addTab("Inserir Resultados", null, pInserirResultado, null);
 		pInserirResultado.setLayout(null);
-		
+
 		btnBuscaJogo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -264,41 +270,105 @@ public class TelaCampeonatoPaulista extends JFrame {
 				}
 			}
 		});
-		
+
 		JLabel lblInsereResultado = new JLabel("INSERIR RESULTADOS");
 		lblInsereResultado.setForeground(Color.BLUE);
 		lblInsereResultado.setFont(new Font("Dialog", Font.BOLD, 20));
-		lblInsereResultado.setBounds(232, 18, 259, 43);
+		lblInsereResultado.setBounds(206, 12, 259, 43);
 		pInserirResultado.add(lblInsereResultado);
-		
+
 		JLabel lblDigite_1 = new JLabel("Digite uma data");
 		lblDigite_1.setForeground(Color.DARK_GRAY);
 		lblDigite_1.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblDigite_1.setBounds(87, 111, 127, 23);
+		lblDigite_1.setBounds(497, 44, 118, 23);
 		pInserirResultado.add(lblDigite_1);
-		
+
 		final JFormattedTextField tfData_1 = new JFormattedTextField(mascaraData);
-		tfData_1.setBounds(232, 111, 102, 23);
+		tfData_1.setBounds(614, 44, 102, 23);
 		pInserirResultado.add(tfData_1);
-		
+
 		JButton btnBuscaJogo_1 = new JButton("BUSCAR");
 		btnBuscaJogo_1.setForeground(Color.BLUE);
 		btnBuscaJogo_1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		btnBuscaJogo_1.setBounds(399, 111, 86, 23);
+		btnBuscaJogo_1.setBounds(624, 79, 86, 23);
 		pInserirResultado.add(btnBuscaJogo_1);
-		
+
 		JScrollPane scrollPane_1_1 = new JScrollPane();
 		scrollPane_1_1.setBounds(12, 145, 705, 302);
 		pInserirResultado.add(scrollPane_1_1);
-		
+
 		tableInsereResultado = new JTable();
 		tableInsereResultado.setToolTipText("");
 		tableInsereResultado.setForeground(Color.BLACK);
 		scrollPane_1_1.setViewportView(tableInsereResultado);
-		
+
 		final JCheckBox cbTodasDatas_1 = new JCheckBox("Todas as datas");
-		cbTodasDatas_1.setBounds(396, 69, 151, 23);
+		cbTodasDatas_1.setBounds(565, 110, 151, 23);
 		pInserirResultado.add(cbTodasDatas_1);
+
+		JLabel lblMandante = new JLabel("Mandante");
+		lblMandante.setBounds(42, 92, 86, 19);
+		pInserirResultado.add(lblMandante);
+
+		tFGolA = new JTextField();
+		tFGolA.setBounds(123, 87, 30, 30);
+		pInserirResultado.add(tFGolA);
+		tFGolA.setColumns(10);
+
+		tFGolB = new JTextField();
+		tFGolB.setColumns(10);
+		tFGolB.setBounds(172, 87, 30, 30);
+		pInserirResultado.add(tFGolB);
+
+		JLabel lblMandante_1 = new JLabel("Vistante");
+		lblMandante_1.setBounds(215, 92, 86, 19);
+		pInserirResultado.add(lblMandante_1);
+
+		JButton btnInserir = new JButton("INSERIR");
+		btnInserir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				int golA, golB, linha;
+
+				linha = tableInsereResultado.getSelectedRow();
+
+				if (linha != -1) {
+
+					try {
+
+						if (!tFGolA.getText().equals("") && !tFGolB.getText().equals("")) {
+							golA = Integer.parseInt(tFGolA.getText());
+							golB = Integer.parseInt(tFGolB.getText());
+							
+							if (cbTodasDatas_1.isSelected()) {
+								
+								cIR.inseriGols(linha, golA, golB, "-1", tableInsereResultado);
+								limpaTextf(tFGolA, tFGolB);
+								
+							} else {
+								
+								cIR.inseriGols(linha, golA, golB, tfData_1.getText(), tableInsereResultado);
+								limpaTextf(tFGolA, tFGolB);
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Digite os Gols", "Erro", JOptionPane.ERROR_MESSAGE);
+						}
+
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(null, "Digite somente numeros inteiros", "Erro",
+								JOptionPane.ERROR_MESSAGE);
+
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "Selecione um jogo", "Erro", JOptionPane.ERROR_MESSAGE);
+				}
+
+			}
+		});
+		btnInserir.setForeground(Color.BLUE);
+		btnInserir.setFont(new Font("Dialog", Font.PLAIN, 12));
+		btnInserir.setBounds(290, 90, 86, 23);
+		pInserirResultado.add(btnInserir);
 
 		btnBuscaJogo_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -316,5 +386,12 @@ public class TelaCampeonatoPaulista extends JFrame {
 			}
 		});
 
+	}
+	
+	private static void limpaTextf(JTextField tFGolA2, JTextField tFGolB2) {
+		
+		tFGolA2.setText("");
+		tFGolB2.setText("");
+		
 	}
 }

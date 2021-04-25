@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.TextField;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ import model.ModelTabelaResultado;
 import persistence.RodadaDao;
 
 public class ControllerInserirResultados {
+	
+	private ModelTabelaResultado mJ;
 
 	public void buscaRodadas(JTable table, String data) throws ClassNotFoundException, SQLException {
 
@@ -32,13 +35,31 @@ public class ControllerInserirResultados {
 		mostraRodadas(table, rodadas);
 
 	}
+	
+	public void inseriGols(int linha, int golA, int golB, String data, JTable table) throws SQLException, ClassNotFoundException {
+		
+		Jogos jogo = this.mJ.getSelectedObject(linha);
+		RodadaDao rDao = new RodadaDao();
+		
+		jogo.setGolA(golA);
+		jogo.setGolB(golB);
+	
+		rDao.insereGol(jogo);
+		
+		if(data.equals("-1")) {
+			this.buscaRodadas(table);
+		}else {
+			this.buscaRodadas(table, data);
+		}
+		
+	}
 
 	private void mostraRodadas(JTable table, List<Jogos> jogos) throws ClassNotFoundException, SQLException {
 
 		try {
 
 			if (!jogos.get(0).getNomeTimeA().equalsIgnoreCase("-1")) {
-				ModelTabelaResultado mJ = new ModelTabelaResultado(jogos);
+				this.mJ = new ModelTabelaResultado(jogos);
 				table.setModel(mJ);
 			} else {
 				table.clearSelection();

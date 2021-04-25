@@ -18,6 +18,10 @@ public class ModelTabelaResultado extends AbstractTableModel {
 		this.jogos = jogos;
 	}
 
+	public Jogos getSelectedObject(int row) {
+		return jogos.get(row);
+	}
+
 	@Override
 	public String getColumnName(int column) {
 

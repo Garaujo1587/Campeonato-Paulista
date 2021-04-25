@@ -34,13 +34,14 @@ public class RodadaDao {
 	public List<Jogos> mostraRodadas() throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
 		String sql;
-		sql = "SELECT Mandante, Visitante,Gol_M , Gol_V ,Estadio, Cidade, Dataj From fn_RetornaRodadas() ";
+		sql = "SELECT id, Mandante, Visitante,Gol_M , Gol_V ,Estadio, Cidade, Dataj From fn_RetornaRodadas() ";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
 
 			Jogos j = new Jogos();
+			j.setId(rs.getInt("id"));
 			j.setNomeTimeA(rs.getString("Mandante"));
 			j.setNomeTimeB(rs.getString("Visitante"));
 			j.setGolA(rs.getInt("Gol_M"));
@@ -62,7 +63,7 @@ public class RodadaDao {
 	public List<Jogos> buscaRodada(String data) throws SQLException {
 		List<Jogos> listaJogos = new ArrayList<Jogos>();
 		String sql;
-		sql = "SELECT Mandante, Visitante, Gol_M , Gol_V, Estadio, Cidade, Dataj FROM fn_BuscaJogos(?) ";
+		sql = "SELECT id, Mandante, Visitante, Gol_M , Gol_V, Estadio, Cidade, Dataj FROM fn_BuscaJogos(?) ";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, data);
 		ResultSet rs = ps.executeQuery();
@@ -70,7 +71,8 @@ public class RodadaDao {
 		while (rs.next()) {
 
 			Jogos j = new Jogos();
-
+			
+			j.setId(rs.getInt("id"));
 			j.setNomeTimeA(rs.getString("Mandante"));
 			j.setNomeTimeB(rs.getString("Visitante"));
 			j.setGolA(rs.getInt("Gol_M"));
@@ -88,4 +90,21 @@ public class RodadaDao {
 
 		return listaJogos;
 	}
+
+	public void insereGol(Jogos jogo) throws SQLException  {
+		
+		
+		String sql = "{CALL sp_insereGol (?, ?, ?)}";
+		CallableStatement cs = c.prepareCall(sql);
+		cs.setInt(1, jogo.getId());
+		cs.setInt(2, jogo.getGolA());
+		cs.setInt(3, jogo.getGolB());
+		cs.execute();
+		cs.close();
+		
+		
+		
+		
+	}
+
 }

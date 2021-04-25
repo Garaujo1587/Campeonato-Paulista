@@ -13,14 +13,15 @@ PRIMARY KEY (codigoTime)
 
 
 CREATE TABLE jogos (
-codigoTimeA INT NOT NULL,  
-codigoTimeB INT NOT NULL,
-golsTimeA INT, 
-golsTimeB INT, 
-data DATE NOT NULL
-PRIMARY KEY(codigoTimeA, codigoTimeB)
-FOREIGN KEY(codigoTimeA) REFERENCES times (codigoTime),
-FOREIGN KEY(codigoTimeB) REFERENCES times (codigoTime)
+	id INT NOT NULL IDENTITY,
+	codigoTimeA INT NOT NULL,  
+	codigoTimeB INT NOT NULL,
+	golsTimeA INT, 
+	golsTimeB INT, 
+	data DATE NOT NULL
+	PRIMARY KEY(id)
+	FOREIGN KEY(codigoTimeA) REFERENCES times (codigoTime),
+	FOREIGN KEY(codigoTimeB) REFERENCES times (codigoTime)
 ) 
 
 -- PROCEDURE CRIA OS GRUPOS
@@ -328,7 +329,8 @@ SET @saida = 'Rodadas geradas com sucesso'
 
 CREATE FUNCTION fn_RetornaRodadas()
 RETURNS @table TABLE (
-ID 			INT	 IDENTITY(1,1) PRIMARY KEY,
+cod 		INT	 IDENTITY(1,1) PRIMARY KEY,
+id 			int,
 Mandante    VARCHAR(100),
 Visitante   VARCHAR(100),
 Gol_M		int,
@@ -339,8 +341,8 @@ Dataj       VARCHAR(10)
 )
 AS
 BEGIN
-    INSERT INTO @table (Mandante, Visitante,Gol_M , Gol_V, Estadio, Cidade, Dataj)
-        SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante',
+    INSERT INTO @table (id, Mandante, Visitante,Gol_M , Gol_V, Estadio, Cidade, Dataj)
+        SELECT j.id, time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante',
         CASE WHEN (j.golsTimeA  IS NOT NULL)
 		THEN
 			j.golsTimeA 
@@ -362,17 +364,19 @@ BEGIN
 		ORDER BY j.[data] 
     RETURN
 END
+
 -- FUNCTION QUE BUSCA TODOS OS JOGOS DE UMA DATA
 
 CREATE FUNCTION fn_BuscaJogos(@dat VARCHAR(10))
 RETURNS @table TABLE (
-Mandante		VARCHAR(100),
-Visitante		VARCHAR(100),
-Gol_M		int,
-Gol_V		int,
-Estadio         VARCHAR(100),
-Cidade          VARCHAR(100),
-Dataj			VARCHAR(10)
+	id 				int,
+	Mandante		VARCHAR(100),
+	Visitante		VARCHAR(100),
+	Gol_M			int,
+	Gol_V			int,
+	Estadio         VARCHAR(100),
+	Cidade          VARCHAR(100),
+	Dataj			VARCHAR(10)
 )
 AS
 BEGIN
@@ -393,8 +397,8 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-	INSERT INTO @table (Mandante, Visitante,Gol_M , Gol_V, Estadio, Cidade, Dataj)
-		SELECT time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante',
+	INSERT INTO @table (id, Mandante, Visitante,Gol_M , Gol_V, Estadio, Cidade, Dataj)
+		SELECT jogos.id, time1.nomeTime AS 'Mandante', time2.nomeTime AS 'Visitante',
 		CASE WHEN (jogos.golsTimeA  IS NOT NULL)
 		THEN
 			jogos.golsTimeA 
@@ -419,3 +423,9 @@ BEGIN
 
 	RETURN
 END
+
+CREATE PROCEDURE sp_insereGol (@id INT, @golA int, @golB int) 
+AS
+    update jogos
+    set golsTimeA = @golA, golsTimeB = @golB
+    where id = @id

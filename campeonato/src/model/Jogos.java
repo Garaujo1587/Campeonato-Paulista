@@ -2,6 +2,7 @@ package model;
 
 public class Jogos {
 
+	private int id;
 	private String nomeTimeA;
 	private String nomeTimeB;
 	private String estadio;
@@ -9,6 +10,14 @@ public class Jogos {
 	private String data;
 	private int golA;
 	private int golB;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getNomeTimeA() {
 		return nomeTimeA;
@@ -68,8 +77,10 @@ public class Jogos {
 
 	@Override
 	public String toString() {
-		return "Jogos [nomeTimeA=" + nomeTimeA + ", nomeTimeB=" + nomeTimeB + ", estadio=" + estadio + ", cidade="
-				+ cidade + ", data=" + data + ", golA=" + golA + ", golB=" + golB + "]";
+		return "Jogos [id=" + id + ", nomeTimeA=" + nomeTimeA + ", nomeTimeB=" + nomeTimeB + ", estadio=" + estadio
+				+ ", cidade=" + cidade + ", data=" + data + ", golA=" + golA + ", golB=" + golB + "]";
 	}
+
+	
 
 }
