@@ -71,7 +71,7 @@ public class RodadaDao {
 		while (rs.next()) {
 
 			Jogos j = new Jogos();
-			
+
 			j.setId(rs.getInt("id"));
 			j.setNomeTimeA(rs.getString("Mandante"));
 			j.setNomeTimeB(rs.getString("Visitante"));
@@ -91,9 +91,8 @@ public class RodadaDao {
 		return listaJogos;
 	}
 
-	public void insereGol(Jogos jogo) throws SQLException  {
-		
-		
+	public void insereGol(Jogos jogo) throws SQLException {
+
 		String sql = "{CALL sp_insereGol (?, ?, ?)}";
 		CallableStatement cs = c.prepareCall(sql);
 		cs.setInt(1, jogo.getId());
@@ -101,10 +100,7 @@ public class RodadaDao {
 		cs.setInt(3, jogo.getGolB());
 		cs.execute();
 		cs.close();
-		
-		
-		
-		
+
 	}
 
 }

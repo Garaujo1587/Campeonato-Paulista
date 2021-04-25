@@ -9,12 +9,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import model.Jogos;
-import model.ModelTabelaResultado;
+import model.ModelTabelaInserirGol;
 import persistence.RodadaDao;
 
 public class ControllerInserirResultados {
 	
-	private ModelTabelaResultado mJ;
+	private ModelTabelaInserirGol mJ;
 
 	public void buscaRodadas(JTable table, String data) throws ClassNotFoundException, SQLException {
 
@@ -59,7 +59,7 @@ public class ControllerInserirResultados {
 		try {
 
 			if (!jogos.get(0).getNomeTimeA().equalsIgnoreCase("-1")) {
-				this.mJ = new ModelTabelaResultado(jogos);
+				this.mJ = new ModelTabelaInserirGol(jogos);
 				table.setModel(mJ);
 			} else {
 				table.clearSelection();

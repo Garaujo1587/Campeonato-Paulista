@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-public class ModelTabelaResultado extends AbstractTableModel {
+public class ModelTabelaInserirGol extends AbstractTableModel {
 
 	/**
 	 * 
@@ -13,7 +13,7 @@ public class ModelTabelaResultado extends AbstractTableModel {
 	private List<Jogos> jogos;
 	private String[] colunas = { "Mandante", "Gol", "Gol", "Visitante", "Data" };
 
-	public ModelTabelaResultado(List<Jogos> jogos) {
+	public ModelTabelaInserirGol(List<Jogos> jogos) {
 		super();
 		this.jogos = jogos;
 	}

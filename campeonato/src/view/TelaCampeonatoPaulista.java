@@ -24,6 +24,8 @@ import controller.ControllerGrupo;
 import controller.ControllerInserirResultados;
 import controller.ControllerRodada;
 import model.Jogos;
+import model.ModelResultados;
+import model.ModeloTabelaResultados;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -44,6 +46,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 	private JTable tableInsereResultado;
 	private JTextField tFGolA;
 	private JTextField tFGolB;
+	private JTable tableGrupoA;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -109,39 +112,29 @@ public class TelaCampeonatoPaulista extends JFrame {
 		pGrupos.setLayout(null);
 
 		JLabel lblGrupos = new JLabel("GRUPOS");
-		lblGrupos.setBounds(271, 24, 127, 28);
+		lblGrupos.setBounds(281, 12, 127, 28);
 		lblGrupos.setForeground(Color.BLUE);
 		lblGrupos.setFont(new Font("Georgia", Font.BOLD, 24));
 		pGrupos.add(lblGrupos);
 
-		JScrollPane spTabGrupos = new JScrollPane();
-		spTabGrupos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		spTabGrupos.setBounds(58, 134, 611, 301);
-		pGrupos.add(spTabGrupos);
-
-		JScrollPane spGrupos = new JScrollPane();
-		spTabGrupos.setViewportView(spGrupos);
-
-		final JTextArea tabGrupos = new JTextArea();
-		spGrupos.setViewportView(tabGrupos);
-		tabGrupos.setForeground(Color.black);
-
 		// Acao do bot�o gerar grupos
 
-		JButton btnBuscaGrupo = new JButton("MOSTRAR GRUPOS");
-		btnBuscaGrupo.setBounds(234, 69, 192, 23);
+		JButton btnBuscaGrupo = new JButton("MOSTRAR");
+		btnBuscaGrupo.setBounds(291, 52, 92, 23);
 		btnBuscaGrupo.setForeground(Color.BLUE);
 		btnBuscaGrupo.setFont(new Font("Georgia", Font.PLAIN, 12));
 		pGrupos.add(btnBuscaGrupo);
 
+		JScrollPane scrollPaneA = new JScrollPane();
+		scrollPaneA.setBounds(32, 87, 302, 176);
+		pGrupos.add(scrollPaneA);
+
+		tableGrupoA = new JTable();
+		scrollPaneA.setViewportView(tableGrupoA);
+
 		btnBuscaGrupo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					cG.mostraGrupos(tabGrupos);
-				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 
@@ -339,14 +332,14 @@ public class TelaCampeonatoPaulista extends JFrame {
 						if (!tFGolA.getText().equals("") && !tFGolB.getText().equals("")) {
 							golA = Integer.parseInt(tFGolA.getText());
 							golB = Integer.parseInt(tFGolB.getText());
-							
+
 							if (cbTodasDatas_1.isSelected()) {
-								
+
 								cIR.inseriGols(linha, golA, golB, "-1", tableInsereResultado);
 								limpaTextf(tFGolA, tFGolB);
-								
+
 							} else {
-								
+
 								cIR.inseriGols(linha, golA, golB, tfData_1.getText(), tableInsereResultado);
 								limpaTextf(tFGolA, tFGolB);
 							}
@@ -387,11 +380,11 @@ public class TelaCampeonatoPaulista extends JFrame {
 		});
 
 	}
-	
+
 	private static void limpaTextf(JTextField tFGolA2, JTextField tFGolB2) {
-		
+
 		tFGolA2.setText("");
 		tFGolB2.setText("");
-		
+
 	}
 }
