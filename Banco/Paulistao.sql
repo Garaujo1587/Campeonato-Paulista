@@ -170,6 +170,9 @@ SET @saida = 'Grupos gerados com sucesso'
 CREATE PROCEDURE sp_criando_rodadas (@saida VARCHAR(MAX) OUTPUT)
 AS
 	DELETE FROM jogos
+	DBCC CHECKIDENT (jogos, reseed, 0)
+
+	
 	-- DECLARA VARIAVEIS 
 	DECLARE @I AS INT,
 			@DTJOGOTJOGO AS DATE,
