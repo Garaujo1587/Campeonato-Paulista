@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Jogos;
+import model.ModelResultados;
 
 public class RodadaDao {
 
@@ -103,4 +104,40 @@ public class RodadaDao {
 
 	}
 
+
+	public List<ModelResultados> classificacao(String grupo) throws SQLException{
+		
+		List<ModelResultados> classificacao = new ArrayList<ModelResultados>();
+		String sql;
+		sql = "SELECT cod, id, time_nome, num_jogos, vitoria, empate, derrota, gol_pro, gol_com, saldo_gol, pontos FROM fn_Resultados(?) ";
+		PreparedStatement ps = c.prepareStatement(sql);
+		ps.setString(1, grupo);
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+
+			ModelResultados r = new ModelResultados();
+
+			r.setPosicao(rs.getInt("cod"));
+			r.setId(rs.getInt("id"));
+			r.setTime(rs.getString("time_nome"));
+			r.setnJogos(rs.getInt("num_jogos"));
+			r.setVitorias(rs.getInt("vitoria"));
+			r.setEmpates(rs.getInt("empate"));
+			r.setDerrotas(rs.getInt("derrota"));
+			r.setGolPro(rs.getInt("gol_pro"));
+			r.setGolCom(rs.getInt("gol_com"));
+			r.setSaldoGol(rs.getInt("saldo_gol"));
+			r.setPontos(rs.getInt("pontos"));
+			
+
+			classificacao.add(r);
+
+		}
+
+		rs.close();
+		ps.close();
+
+		return classificacao;
+	}
 }

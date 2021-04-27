@@ -3,6 +3,7 @@ package model;
 public class ModelResultados {
 
 	private int id;
+	private int posicao;
 	private String time;
 	private int nJogos;
 	private int vitorias;
@@ -17,14 +18,16 @@ public class ModelResultados {
 
 	}
 
-	public ModelResultados(int id, String time, int nJogos, int vitorias, int empates, int golPro, int golCom,
-			int saldoGol, int pontos) {
+	public ModelResultados(int id, int posicao, String time, int nJogos, int vitorias, int empates, int derrotas,
+			int golPro, int golCom, int saldoGol, int pontos) {
 		super();
 		this.id = id;
+		this.posicao = posicao;
 		this.time = time;
 		this.nJogos = nJogos;
 		this.vitorias = vitorias;
 		this.empates = empates;
+		this.derrotas = derrotas;
 		this.golPro = golPro;
 		this.golCom = golCom;
 		this.saldoGol = saldoGol;
@@ -37,6 +40,14 @@ public class ModelResultados {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getPosicao() {
+		return posicao;
+	}
+
+	public void setPosicao(int posicao) {
+		this.posicao = posicao;
 	}
 
 	public String getTime() {
@@ -113,9 +124,9 @@ public class ModelResultados {
 
 	@Override
 	public String toString() {
-		return "ModelResultados [id=" + id + ", time=" + time + ", nJogos=" + nJogos + ", vitorias=" + vitorias
-				+ ", empates=" + empates + ", golPro=" + golPro + ", golCom=" + golCom + ", saldoGol=" + saldoGol
-				+ ", pontos=" + pontos + "]";
+		return "ModelResultados [id=" + id + ", posicao=" + posicao + ", time=" + time + ", nJogos=" + nJogos
+				+ ", vitorias=" + vitorias + ", empates=" + empates + ", derrotas=" + derrotas + ", golPro=" + golPro
+				+ ", golCom=" + golCom + ", saldoGol=" + saldoGol + ", pontos=" + pontos + "]";
 	}
 
 }

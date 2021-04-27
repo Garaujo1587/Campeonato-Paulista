@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
+import controller.ControllerClassificacao;
 import controller.ControllerGrupo;
 import controller.ControllerInserirResultados;
 import controller.ControllerRodada;
@@ -41,12 +42,16 @@ public class TelaCampeonatoPaulista extends JFrame {
 	private JTable table;
 	private ControllerGrupo cG = new ControllerGrupo();
 	private ControllerRodada cR = new ControllerRodada();
+	private ControllerClassificacao cC = new ControllerClassificacao();
 	private ControllerInserirResultados cIR = new ControllerInserirResultados();
 	private JTable tableBusca;
 	private JTable tableInsereResultado;
 	private JTextField tFGolA;
 	private JTextField tFGolB;
 	private JTable tableGrupoA;
+	private JTable tableGrupoB;
+	private JTable tableGrupoC;
+	private JTable tableGrupoD;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -65,7 +70,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 
 	public TelaCampeonatoPaulista() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 768, 523);
+		setBounds(100, 100, 768, 616);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -105,38 +110,6 @@ public class TelaCampeonatoPaulista extends JFrame {
 		final JTextArea taGrupos = new JTextArea();
 		spInicial.setViewportView(taGrupos);
 		taGrupos.setForeground(Color.black);
-
-		// Tela que mostra os grupos formados
-		JPanel pGrupos = new JPanel();
-		tabbedPane.addTab("Grupos", null, pGrupos, null);
-		pGrupos.setLayout(null);
-
-		JLabel lblGrupos = new JLabel("GRUPOS");
-		lblGrupos.setBounds(281, 12, 127, 28);
-		lblGrupos.setForeground(Color.BLUE);
-		lblGrupos.setFont(new Font("Georgia", Font.BOLD, 24));
-		pGrupos.add(lblGrupos);
-
-		// Acao do bot�o gerar grupos
-
-		JButton btnBuscaGrupo = new JButton("MOSTRAR");
-		btnBuscaGrupo.setBounds(291, 52, 92, 23);
-		btnBuscaGrupo.setForeground(Color.BLUE);
-		btnBuscaGrupo.setFont(new Font("Georgia", Font.PLAIN, 12));
-		pGrupos.add(btnBuscaGrupo);
-
-		JScrollPane scrollPaneA = new JScrollPane();
-		scrollPaneA.setBounds(32, 87, 302, 176);
-		pGrupos.add(scrollPaneA);
-
-		tableGrupoA = new JTable();
-		scrollPaneA.setViewportView(tableGrupoA);
-
-		btnBuscaGrupo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
 
 		btnGrupos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -243,6 +216,85 @@ public class TelaCampeonatoPaulista extends JFrame {
 		final JCheckBox cbTodasDatas = new JCheckBox("Todas as datas");
 		cbTodasDatas.setBounds(396, 52, 151, 23);
 		pBuscaRodadas.add(cbTodasDatas);
+		
+				// Tela que mostra os grupos formados
+				JPanel pGrupos = new JPanel();
+				tabbedPane.addTab("Grupos", null, pGrupos, null);
+				pGrupos.setLayout(null);
+				
+						// Acao do bot�o gerar grupos
+				
+						JButton btnBuscaGrupo = new JButton("MOSTRAR");
+						btnBuscaGrupo.setBounds(647, 515, 92, 23);
+						btnBuscaGrupo.setForeground(Color.BLUE);
+						btnBuscaGrupo.setFont(new Font("Georgia", Font.PLAIN, 12));
+						pGrupos.add(btnBuscaGrupo);
+						
+								JScrollPane scrollPaneA = new JScrollPane();
+								scrollPaneA.setBounds(32, 39, 694, 87);
+								pGrupos.add(scrollPaneA);
+								
+										tableGrupoA = new JTable();
+										scrollPaneA.setViewportView(tableGrupoA);
+										
+										JLabel lblGrupoA = new JLabel("Grupo A");
+										lblGrupoA.setBounds(324, 22, 70, 15);
+										pGrupos.add(lblGrupoA);
+										
+										JLabel lblGrupoA_1 = new JLabel("Grupo B");
+										lblGrupoA_1.setBounds(324, 138, 70, 15);
+										pGrupos.add(lblGrupoA_1);
+										
+										JScrollPane scrollPaneA_1 = new JScrollPane();
+										scrollPaneA_1.setBounds(32, 155, 694, 87);
+										pGrupos.add(scrollPaneA_1);
+										
+										tableGrupoB = new JTable();
+										scrollPaneA_1.setViewportView(tableGrupoB);
+										
+										JScrollPane scrollPaneA_1_1 = new JScrollPane();
+										scrollPaneA_1_1.setBounds(32, 281, 694, 87);
+										pGrupos.add(scrollPaneA_1_1);
+										
+										tableGrupoC = new JTable();
+										scrollPaneA_1_1.setViewportView(tableGrupoC);
+										
+										JLabel lblGrupoA_1_1 = new JLabel("Grupo C");
+										lblGrupoA_1_1.setBounds(324, 264, 70, 15);
+										pGrupos.add(lblGrupoA_1_1);
+										
+										JButton btnBuscaGrupo_1 = new JButton("MOSTRAR");
+										btnBuscaGrupo_1.setForeground(Color.BLUE);
+										btnBuscaGrupo_1.setFont(new Font("Dialog", Font.PLAIN, 12));
+										btnBuscaGrupo_1.setBounds(647, 641, 92, 23);
+										pGrupos.add(btnBuscaGrupo_1);
+										
+										JLabel lblGrupoA_1_1_1 = new JLabel("Grupo D");
+										lblGrupoA_1_1_1.setBounds(324, 392, 70, 15);
+										pGrupos.add(lblGrupoA_1_1_1);
+										
+										JScrollPane scrollPaneA_1_1_1 = new JScrollPane();
+										scrollPaneA_1_1_1.setBounds(32, 407, 694, 87);
+										pGrupos.add(scrollPaneA_1_1_1);
+										
+										tableGrupoD = new JTable();
+										scrollPaneA_1_1_1.setViewportView(tableGrupoD);
+										
+												btnBuscaGrupo.addActionListener(new ActionListener() {
+													public void actionPerformed(ActionEvent e) {
+										
+														try {
+															cC.buscaClassificacaoGrupos(tableGrupoA, "A");
+															cC.buscaClassificacaoGrupos(tableGrupoB, "B");
+															cC.buscaClassificacaoGrupos(tableGrupoC, "C");
+															cC.buscaClassificacaoGrupos(tableGrupoD, "D");
+														} catch (ClassNotFoundException | SQLException e1) {
+															// TODO Auto-generated catch block
+															e1.printStackTrace();
+														}
+										
+													}
+												});
 
 		JPanel pInserirResultado = new JPanel();
 		tabbedPane.addTab("Inserir Resultados", null, pInserirResultado, null);

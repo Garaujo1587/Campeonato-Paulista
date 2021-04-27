@@ -11,7 +11,7 @@ public class ModeloTabelaResultados extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private List<ModelResultados> jogos;
-	private String[] colunas = { "Time", "Nj", "V", "E","D","GM", "GS", "SG", "P" };
+	private String[] colunas = { "Time", "Num jogos", "Vitorias", "Empates","Derrotas","Gol Mar", "Gol Sof", "Saldo Gol", "Pontos" };
 
 		
 	public ModeloTabelaResultados() {
