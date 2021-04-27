@@ -77,3 +77,6 @@ BEGIN
 
     RETURN
 END
+
+select * from fn_Resultados('')
+
