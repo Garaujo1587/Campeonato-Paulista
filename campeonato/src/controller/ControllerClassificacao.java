@@ -9,14 +9,12 @@ import persistence.RodadaDao;
 
 public class ControllerClassificacao {
 
-	public void buscaClassificacaoGrupos(JTable table,String grupo) throws ClassNotFoundException, SQLException {
-		
-		RodadaDao rd = new RodadaDao();
-		
+	public void buscaClassificacaoGrupos(JTable table, String grupo) throws ClassNotFoundException, SQLException {
 
-		
-			mostraClassificacao(table, rd.classificacao(grupo));
-		
+		RodadaDao rd = new RodadaDao();
+
+		mostraClassificacao(table, rd.classificacao(grupo));
+	
 
 	}
 

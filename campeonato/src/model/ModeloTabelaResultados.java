@@ -31,8 +31,8 @@ public class ModeloTabelaResultados extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		//return jogos.size();
-		return 4;
+		return jogos.size();
+		
 	}
 
 	@Override
