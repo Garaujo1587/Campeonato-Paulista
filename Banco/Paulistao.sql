@@ -429,3 +429,76 @@ AS
     update jogos
     set golsTimeA = @golA, golsTimeB = @golB
     where id = @id
+
+-- trigger que impede realizar as operacoes insert, delete e update na tabela times
+CREATE TRIGGER t_times ON times
+FOR INSERT, DELETE, UPDATE
+AS
+BEGIN
+	ROLLBACK TRANSACTION
+	RAISERROR('Acao invalida', 16, 1)
+END
+
+-- trigger que impede realizar as operacoes insert, delete na tabela grupos
+CREATE TRIGGER t_jogos ON jogos
+FOR INSERT, DELETE
+AS
+BEGIN
+	ROLLBACK TRANSACTION
+	RAISERROR('Acao invalida', 16, 1)
+END
+
+CREATE FUNCTION fn_tabela_grupo (@grupo CHAR(1))
+RETURNS @table TABLE (
+	nome_time 				VARCHAR(100),
+	num_jogos_disputados	INT,
+	vitorias				INT,
+	empates					INT,
+	derrotas				INT,
+	gols_marcados			INT,
+	gols_sofridos			INT,
+	saldo_gols				INT,
+	pontos					INT
+)
+AS
+BEGIN
+	INSERT INTO @table (nome_time, num_jogos_disputados)
+	-- contando jogos disputados
+	select times.nomeTime as times, count(jogos.id) as jogos_disputados
+	from times,jogos where jogos.golsTimeA >= 0 and (times.codigoTime = jogos.codigoTimeA or times.codigoTime = jogos.codigoTimeB)
+	group by times.nomeTime
+	
+	--contando vitorias
+	select times.nomeTime as times, count (jogos.id) as vitorias
+	from times,jogos 
+	where (times.codigoTime = jogos.codigoTimeA AND jogos.golsTimeA > jogos.golsTimeB)
+	or (times.codigoTime = jogos.codigoTimeB AND jogos.golsTimeB > jogos.golsTimeA)
+	group by times.nomeTime
+
+	--contando derrotas
+	select times.nomeTime as times, count (jogos.id) as derrotas
+	from times,jogos 
+	where (times.codigoTime = jogos.codigoTimeA AND jogos.golsTimeA < jogos.golsTimeB)
+	or (times.codigoTime = jogos.codigoTimeB AND jogos.golsTimeB < jogos.golsTimeA)
+	group by times.nomeTime
+
+	--contando empates
+	select times.nomeTime as times, count (jogos.id) as empates
+	from times,jogos
+	where (times.codigoTime = jogos.codigoTimeA AND jogos.golsTimeA = jogos.golsTimeB)
+	or (times.codigoTime = jogos.codigoTimeB AND jogos.golsTimeB = jogos.golsTimeA)
+	group by times.nomeTime
+
+	-- gols marcados como mandante
+	select t.nomeTime, SUM(j.golsTimeA) as golsMarcadosMandante
+	from times t, jogos j
+	where (t.codigoTime = j.codigoTimeA)
+	group by t.nomeTime
+
+	-- gols marcados como visitante
+	select t.nomeTime, SUM(j.golsTimeB) as golsMarcadosVisitante
+	from times t, jogos j
+	where (t.codigoTime = j.codigoTimeB)
+	group by t.nomeTime
+
+END
