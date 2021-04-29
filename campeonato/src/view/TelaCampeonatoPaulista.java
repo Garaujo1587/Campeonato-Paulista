@@ -418,7 +418,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		pInserirResultado.add(btnInserir);
 
 		JPanel panel = new JPanel();
-		tabbedPane.addTab("Classificação GEral", null, panel, null);
+		tabbedPane.addTab("Classificação Geral", null, panel, null);
 		panel.setLayout(null);
 
 		JLabel lblInsereResultado_1 = new JLabel("Classificação");

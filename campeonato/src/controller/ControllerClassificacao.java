@@ -14,6 +14,8 @@ import persistence.RodadaDao;
 
 public class ControllerClassificacao {
 
+	private int linha = -1;
+
 	public void buscaClassificacaoGrupos(JTable table, String grupo) throws ClassNotFoundException, SQLException {
 
 		String idRe1, idRe2;
@@ -49,16 +51,21 @@ public class ControllerClassificacao {
 					boolean hasFocus, int row, int column) {
 				DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) super.getTableCellRendererComponent(
 						table, value, isSelected, hasFocus, row, column);
+
+
+				if (value.toString().equals(r1) || value.toString().equals(r2)) {
+					linha = row;
+				} else if (linha != row) {
+					linha = -1;
+				}
+
 				if (originalColor == null) {
 					originalColor = getForeground();
 				}
-				if (value == null) {
-					renderer.setText("");
-				} else {
-					renderer.setText(value.toString());
-				}
+				
+				renderer.setText(value.toString());
 
-				if (value.toString().equals(r1) || value.toString().equals(r2)) {
+				if (row > 13) {
 					renderer.setForeground(Color.RED);
 				} else {
 					renderer.setForeground(originalColor); // Retore original color
@@ -68,10 +75,8 @@ public class ControllerClassificacao {
 					if (row == 0 || row == 1) {
 						renderer.setForeground(Color.blue);
 					} else {
-						if (value.toString().equals(r1) || value.toString().equals(r2)) {
-							if (row == 2 || row == 3) {
-								renderer.setForeground(Color.RED);
-							}
+						if (row == linha) {
+							renderer.setForeground(Color.RED);
 						} else {
 							renderer.setForeground(originalColor); // Retore original color
 						}
