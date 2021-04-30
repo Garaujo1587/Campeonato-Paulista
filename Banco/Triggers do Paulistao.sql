@@ -1,45 +1,25 @@
+USE paulistao
+
 -- trigger que impede realizar as operacoes insert, delete e update na tabela times
 CREATE TRIGGER t_times ON times
-FOR INSERT, DELETE
+FOR DELETE, UPDATE, INSERT
 AS
 BEGIN
-	IF ((SELECT COUNT(*) FROM times) > 16)
-	BEGIN 
 		ROLLBACK TRANSACTION
-		RAISERROR('A tabela times j· est· montada', 16, 1)
-	END
+		RAISERROR('A tabela j√° est√° montada', 16, 1)
+	
 END
 
-CREATE TRIGGER t_upd ON times
-FOR UPDATE
-AS
-BEGIN
-	ROLLBACK TRANSACTION
-	RAISERROR('A tabela times n„o pode ser atualizada', 16, 1)
-END
-
-
--- Testando as triggers do time
-INSERT INTO times VALUES (17, 'time', 'cidade', 'estadio', 'E')
-DELETE FROM times
-UPDATE times
-SET nomeTime = 'Santos FC'
-where codigoTime = 9
-
-
+DISABLE TRIGGER t_times ON times
 
 -- trigger que impede realizar as operacoes insert, delete na tabela grupos
-CREATE TRIGGER t_jogos ON jogos
+CREATE  TRIGGER t_jogos ON jogos
 FOR INSERT, DELETE
 AS
 BEGIN
-	IF ((SELECT COUNT(*) FROM jogos) > 96)
-	BEGIN 
 		ROLLBACK TRANSACTION
-		RAISERROR('A tabela jogos j· est· montada', 16, 1)
-	END
+		RAISERROR('A tabela j√° esta montada', 16, 1)
+
 END
 
--- testando a trigger jogos
-INSERT INTO jogos VALUES (1, 16, 1, 1, 2, '2020-01-20')
-DELETE FROM jogos
+DISABLE TRIGGER t_jogos ON jogos

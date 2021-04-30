@@ -119,7 +119,8 @@ public class TelaCampeonatoPaulista extends JFrame {
 					cG.geraGrupos(taGrupos);
 				} catch (ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, e1.getMessage(), "Grupo ja existe",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -162,7 +163,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 					cR.geraRodadas(table);
 				} catch (ClassNotFoundException | SQLException e1) {
 
-					JOptionPane.showMessageDialog(null, "Crie os Grupos", "Grupo não existe",
+					JOptionPane.showMessageDialog(null, e1.getLocalizedMessage(), "Erro Jogos",
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}

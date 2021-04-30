@@ -160,7 +160,7 @@ AS
 		SET @COD_GRUPO = @COD_GRUPO + 1
 	END
 
-
+	EXEC('ENABLE TRIGGER t_times ON times')
 
 SET @saida = 'Grupos gerados com sucesso'
 
@@ -325,6 +325,7 @@ AS
 		SET @J = @J +1
 	END
 
+	    EXEC('ENABLE TRIGGER t_jogos ON jogos')
 
 SET @saida = 'Rodadas geradas com sucesso'
 

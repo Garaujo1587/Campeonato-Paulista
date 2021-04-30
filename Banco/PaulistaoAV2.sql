@@ -1,3 +1,5 @@
+use paulistao
+
 -- PROCEDURE INSERE GOLS
 
 CREATE PROCEDURE sp_insereGol (@id INT, @golA int, @golB int) 
@@ -207,5 +209,3 @@ BEGIN
 
     RETURN
 END
-
-select * from fn_Resultados('')
