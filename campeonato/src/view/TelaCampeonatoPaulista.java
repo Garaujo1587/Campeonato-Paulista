@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
+import controller.Controller4Finais;
 import controller.ControllerClassificacao;
 import controller.ControllerGrupo;
 import controller.ControllerInserirResultados;
@@ -35,6 +36,12 @@ import javax.swing.JTable;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.Dimension;
+import javax.swing.JSeparator;
+import com.jgoodies.forms.factories.DefaultComponentFactory;
+import javax.swing.JDesktopPane;
 
 public class TelaCampeonatoPaulista extends JFrame {
 
@@ -45,6 +52,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 	private ControllerRodada cR = new ControllerRodada();
 	private ControllerClassificacao cC = new ControllerClassificacao();
 	private ControllerInserirResultados cIR = new ControllerInserirResultados();
+	private Controller4Finais c4F = new Controller4Finais();
 	private JTable tableBusca;
 	private JTable tableInsereResultado;
 	private JTextField tFGolA;
@@ -54,6 +62,14 @@ public class TelaCampeonatoPaulista extends JFrame {
 	private JTable tableGrupoC;
 	private JTable tableGrupoD;
 	private JTable tableclassificacaoGeral;
+	private JTextField tfJ3A;
+	private JTextField tfJ3B;
+	private JTextField tfJ2A;
+	private JTextField tfJ2B;
+	private JTextField tfJ4A;
+	private JTextField tfJ4B;
+	private JTextField tfJ1A;
+	private JTextField tfJ1B;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -440,6 +456,102 @@ public class TelaCampeonatoPaulista extends JFrame {
 
 		tableclassificacaoGeral = new JTable();
 		scrollPane_2.setViewportView(tableclassificacaoGeral);
+		
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("4final", null, panel_1, null);
+		panel_1.setLayout(null);
+		
+		tfJ3A = new JTextField();
+		tfJ3A.setColumns(10);
+		tfJ3A.setBounds(39, 297, 142, 24);
+		panel_1.add(tfJ3A);
+		
+		JLabel lblX_1 = new JLabel("X");
+		lblX_1.setFont(new Font("Dialog", Font.BOLD, 30));
+		lblX_1.setBounds(188, 297, 23, 24);
+		panel_1.add(lblX_1);
+		
+		tfJ3B = new JTextField();
+		tfJ3B.setColumns(10);
+		tfJ3B.setBounds(218, 297, 142, 24);
+		panel_1.add(tfJ3B);
+		
+		tfJ2A = new JTextField();
+		tfJ2A.setColumns(10);
+		tfJ2A.setBounds(400, 164, 142, 24);
+		panel_1.add(tfJ2A);
+		
+		JLabel lblX_2 = new JLabel("X");
+		lblX_2.setFont(new Font("Dialog", Font.BOLD, 30));
+		lblX_2.setBounds(549, 164, 23, 24);
+		panel_1.add(lblX_2);
+		
+		tfJ2B = new JTextField();
+		tfJ2B.setColumns(10);
+		tfJ2B.setBounds(579, 164, 142, 24);
+		panel_1.add(tfJ2B);
+		
+		tfJ4A = new JTextField();
+		tfJ4A.setColumns(10);
+		tfJ4A.setBounds(400, 297, 142, 24);
+		panel_1.add(tfJ4A);
+		
+		JLabel lblX_3 = new JLabel("X");
+		lblX_3.setFont(new Font("Dialog", Font.BOLD, 30));
+		lblX_3.setBounds(549, 297, 23, 24);
+		panel_1.add(lblX_3);
+		
+		tfJ4B = new JTextField();
+		tfJ4B.setColumns(10);
+		tfJ4B.setBounds(579, 297, 142, 24);
+		panel_1.add(tfJ4B);
+		
+		tfJ1A = new JTextField();
+		tfJ1A.setColumns(10);
+		tfJ1A.setBounds(39, 164, 142, 24);
+		panel_1.add(tfJ1A);
+		
+		JLabel lblX_1_1 = new JLabel("X");
+		lblX_1_1.setFont(new Font("Dialog", Font.BOLD, 30));
+		lblX_1_1.setBounds(188, 164, 23, 24);
+		panel_1.add(lblX_1_1);
+		
+		tfJ1B = new JTextField();
+		tfJ1B.setColumns(10);
+		tfJ1B.setBounds(218, 164, 142, 24);
+		panel_1.add(tfJ1B);
+		
+		JButton btn4Finais = new JButton("MOSTRAR");
+		btn4Finais.setForeground(Color.BLUE);
+		btn4Finais.setFont(new Font("Dialog", Font.PLAIN, 12));
+		btn4Finais.setBounds(602, 36, 101, 23);
+		panel_1.add(btn4Finais);
+		
+		JLabel lblJogo = new JLabel("Jogo 1");
+		lblJogo.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblJogo.setBounds(174, 112, 70, 15);
+		panel_1.add(lblJogo);
+		
+		JLabel lblJogo_1 = new JLabel("Jogo 2");
+		lblJogo_1.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblJogo_1.setBounds(525, 112, 70, 15);
+		panel_1.add(lblJogo_1);
+		
+		JLabel lblJogo_2 = new JLabel("Jogo 3");
+		lblJogo_2.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblJogo_2.setBounds(174, 258, 70, 15);
+		panel_1.add(lblJogo_2);
+		
+		JLabel lblJogo_3 = new JLabel("Jogo 4");
+		lblJogo_3.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblJogo_3.setBounds(525, 258, 70, 15);
+		panel_1.add(lblJogo_3);
+		
+		JLabel lblPaulistao_1 = new JLabel("Quartas de finais");
+		lblPaulistao_1.setForeground(Color.BLUE);
+		lblPaulistao_1.setFont(new Font("Dialog", Font.BOLD, 24));
+		lblPaulistao_1.setBounds(233, 29, 248, 28);
+		panel_1.add(lblPaulistao_1);
 
 		btnClassificacaoGeral.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -452,6 +564,23 @@ public class TelaCampeonatoPaulista extends JFrame {
 					e1.printStackTrace();
 				}
 
+			}
+		});
+		
+		btn4Finais.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					c4F.busca4Finais(tfJ1A, tfJ1B, "A");
+					c4F.busca4Finais(tfJ2A, tfJ2B, "B");
+					c4F.busca4Finais(tfJ3A, tfJ3B, "C");
+					c4F.busca4Finais(tfJ4A, tfJ4B, "D");
+					
+				} catch (ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 
