@@ -11,11 +11,11 @@ public class ModeloTabelaResultados extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private List<ModelResultados> jogos;
-	private String[] colunas = { "Time", "Num jogos", "Vitorias", "Empates","Derrotas","Gol Mar", "Gol Sof", "Saldo Gol", "Pontos" };
+	private String[] colunas = { "Time", "Num jogos", "Vitorias", "Empates", "Derrotas", "Gol Mar", "Gol Sof",
+			"Saldo Gol", "Pontos" };
 
-		
 	public ModeloTabelaResultados() {
-		
+
 	}
 
 	public ModeloTabelaResultados(List<ModelResultados> jogos) {
@@ -31,8 +31,11 @@ public class ModeloTabelaResultados extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return jogos.size();
-		
+		if (jogos != null) {
+			return jogos.size();
+		}else {
+			return 0;
+		}
 	}
 
 	@Override

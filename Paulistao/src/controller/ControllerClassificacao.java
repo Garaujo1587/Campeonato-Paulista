@@ -30,6 +30,13 @@ public class ControllerClassificacao {
 		mostraClassificacao(table, rd.classificacao(grupo), idRe1, idRe2);
 
 	}
+	
+	public void limparTabela(JTable table) {
+		
+		ModeloTabelaResultados mTR = new ModeloTabelaResultados(null);
+		table.setModel(mTR);
+		
+	}
 
 	private void mostraClassificacao(JTable table, final List<ModelResultados> resultados, final String r1,
 			final String r2) {

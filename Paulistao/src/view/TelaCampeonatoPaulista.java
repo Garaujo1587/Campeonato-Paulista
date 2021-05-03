@@ -56,6 +56,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 	private JTextField tfJ4B;
 	private JTextField tfJ1A;
 	private JTextField tfJ1B;
+	private JTextField tfGrupo;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -241,11 +242,11 @@ public class TelaCampeonatoPaulista extends JFrame {
 		tableGrupoA = new JTable();
 		scrollPaneA.setViewportView(tableGrupoA);
 
-		JLabel lblGrupoA = new JLabel("Grupo A");
+		JLabel lblGrupoA = new JLabel("");
 		lblGrupoA.setBounds(324, 22, 70, 15);
 		pGrupos.add(lblGrupoA);
 
-		JLabel lblGrupoA_1 = new JLabel("Grupo B");
+		JLabel lblGrupoA_1 = new JLabel("");
 		lblGrupoA_1.setBounds(324, 138, 70, 15);
 		pGrupos.add(lblGrupoA_1);
 
@@ -263,7 +264,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		tableGrupoC = new JTable();
 		scrollPaneA_1_1.setViewportView(tableGrupoC);
 
-		JLabel lblGrupoA_1_1 = new JLabel("Grupo C");
+		JLabel lblGrupoA_1_1 = new JLabel("");
 		lblGrupoA_1_1.setBounds(324, 264, 70, 15);
 		pGrupos.add(lblGrupoA_1_1);
 
@@ -273,7 +274,7 @@ public class TelaCampeonatoPaulista extends JFrame {
 		btnBuscaGrupo_1.setBounds(647, 641, 92, 23);
 		pGrupos.add(btnBuscaGrupo_1);
 
-		JLabel lblGrupoA_1_1_1 = new JLabel("Grupo D");
+		JLabel lblGrupoA_1_1_1 = new JLabel("");
 		lblGrupoA_1_1_1.setBounds(324, 392, 70, 15);
 		pGrupos.add(lblGrupoA_1_1_1);
 
@@ -284,14 +285,58 @@ public class TelaCampeonatoPaulista extends JFrame {
 		tableGrupoD = new JTable();
 		scrollPaneA_1_1_1.setViewportView(tableGrupoD);
 
+		tfGrupo = new JTextField();
+		tfGrupo.setBounds(597, 515, 26, 21);
+		pGrupos.add(tfGrupo);
+		tfGrupo.setColumns(10);
+
+		JCheckBox cbTodosGrupos = new JCheckBox("Todos od grupo");
+		cbTodosGrupos.setBounds(424, 515, 144, 23);
+		pGrupos.add(cbTodosGrupos);
+
 		btnBuscaGrupo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-					cC.buscaClassificacaoGrupos(tableGrupoA, "A");
-					cC.buscaClassificacaoGrupos(tableGrupoB, "B");
-					cC.buscaClassificacaoGrupos(tableGrupoC, "C");
-					cC.buscaClassificacaoGrupos(tableGrupoD, "D");
+					if (cbTodosGrupos.isSelected()) {
+						cC.buscaClassificacaoGrupos(tableGrupoA, "A");
+						lblGrupoA.setText("Grupo A");
+						cC.buscaClassificacaoGrupos(tableGrupoB, "B");
+						lblGrupoA_1.setText("Grupo B");
+						cC.buscaClassificacaoGrupos(tableGrupoC, "C");
+						lblGrupoA_1_1.setText("Grupo C");
+						cC.buscaClassificacaoGrupos(tableGrupoD, "D");
+						lblGrupoA_1_1_1.setText("Grupo D");
+					} else {
+						if (!tfGrupo.getText().equals("")) {
+							
+							lblGrupoA.setText("");
+							lblGrupoA_1.setText("");
+							lblGrupoA_1_1.setText("");
+							lblGrupoA_1_1_1.setText("");
+							
+							cC.limparTabela(tableGrupoB);
+							cC.limparTabela(tableGrupoC);
+							cC.limparTabela(tableGrupoD);
+					
+							
+							String grup = tfGrupo.getText().toUpperCase();
+							grup = Character.toString(grup.charAt(0));
+
+							if (grup.equals("A") || grup.equals("B") || grup.equals("C") || grup.equals("D")) {
+
+								cC.buscaClassificacaoGrupos(tableGrupoA, grup);
+								tfGrupo.setText(grup);
+								lblGrupoA.setText("Grupo " + grup);
+
+							} else {
+								JOptionPane.showMessageDialog(null, "Não é uma grupo valido", "Erro",
+										JOptionPane.ERROR_MESSAGE);
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Digite um grupo", "Erro", JOptionPane.ERROR_MESSAGE);
+						}
+					}
 				} catch (ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
